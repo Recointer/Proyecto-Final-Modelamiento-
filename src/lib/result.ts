@@ -18,6 +18,10 @@ export const MENSAJES: Record<string, string> = {
   CEDULA_DUPLICADA: "Ya existe una cuenta con esa cédula en la junta.",
   CORREO_DUPLICADO: "Ya existe una cuenta con ese correo en la junta.",
   JUNTA_DUPLICADA: "Ya existe una junta con ese nombre en la parroquia.",
+  SLUG_DUPLICADO: "Ese identificador ya está en uso.",
+  JUNTA_NO_ENCONTRADA: "La junta no existe.",
+  CONFIRMACION_REQUERIDA: "Debe confirmar la operación.",
+  ACTA_INVALIDA: "El acta debe ser un PDF o imagen de hasta 5 MB.",
   ERROR_INTERNO: "Ocurrió un error inesperado. Intente nuevamente.",
 };
 
