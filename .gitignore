@@ -3,3 +3,9 @@
 .env
 .env.*
 .claude/settings.local.json
+storage/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.env.test
+

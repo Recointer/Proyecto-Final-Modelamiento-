@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --verde: #0f766e;
+  --verde-oscuro: #115e59;
+  --navy: #0f172a;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid #0ea5e9;
+  outline-offset: 2px;
+}
