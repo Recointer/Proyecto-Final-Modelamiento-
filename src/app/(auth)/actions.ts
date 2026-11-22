@@ -23,6 +23,8 @@ export interface EstadoForm {
   error?: { codigo: string; mensaje: string; campo?: string };
   juntas?: { slug: string; nombre: string }[];
   exito?: string;
+  /** Valores no sensibles para repoblar el formulario tras un error (nunca contraseñas). */
+  valores?: { junta?: string; identificador?: string };
 }
 
 const loginSchema = z.object({
@@ -37,13 +39,17 @@ function aEstado(r: Result<unknown>): EstadoForm {
 }
 
 export async function iniciarSesionAction(_: EstadoForm, formData: FormData): Promise<EstadoForm> {
-  const parsed = loginSchema.safeParse({
-    junta: String(formData.get("junta") ?? "") || undefined,
+  const valores = {
+    junta: String(formData.get("junta") ?? ""),
     identificador: String(formData.get("identificador") ?? ""),
+  };
+  const parsed = loginSchema.safeParse({
+    junta: valores.junta || undefined,
+    identificador: valores.identificador,
     password: String(formData.get("password") ?? ""),
     recordar: formData.get("recordar") === "on",
   });
-  if (!parsed.success) return aEstado(fail("DATOS_INVALIDOS"));
+  if (!parsed.success) return { ...aEstado(fail("DATOS_INVALIDOS")), valores };
 
   let destino = "";
   try {
@@ -53,10 +59,10 @@ export async function iniciarSesionAction(_: EstadoForm, formData: FormData): Pr
   } catch (e) {
     if (e instanceof AppError) {
       const juntas = (e as AppError & { juntas?: EstadoForm["juntas"] }).juntas;
-      return { error: { codigo: e.codigo, mensaje: e.message }, juntas };
+      return { error: { codigo: e.codigo, mensaje: e.message }, juntas, valores };
     }
     console.error("Error al iniciar sesión");
-    return aEstado(fail("ERROR_INTERNO"));
+    return { ...aEstado(fail("ERROR_INTERNO")), valores };
   }
   redirect(destino);
 }

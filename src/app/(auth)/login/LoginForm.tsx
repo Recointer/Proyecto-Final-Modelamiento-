@@ -27,6 +27,7 @@ export function LoginForm({ restablecida }: { restablecida: boolean }) {
         etiqueta="Identificador de junta (opcional)"
         placeholder="Ej: san-antonio"
         autoComplete="organization"
+        defaultValue={estado.valores?.junta}
       />
       <Campo
         nombre="identificador"
@@ -34,6 +35,7 @@ export function LoginForm({ restablecida }: { restablecida: boolean }) {
         placeholder="nombre@correo.com o 1712345678"
         requerido
         autoComplete="username"
+        defaultValue={estado.valores?.identificador}
       />
       <Campo nombre="password" etiqueta="Contraseña" tipo="password" requerido autoComplete="current-password" />
 
