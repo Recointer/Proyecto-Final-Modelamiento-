@@ -152,13 +152,13 @@ description: "Lista de tareas: GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n 
 
 ### Tests for User Story 4
 
-- [ ] T048 [P] [US4] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de `obtenerPanel` (totales, evento = 0 si no hay mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³dulo de eventos, sin acceso a datos internos) en `tests/integration/panel.test.ts`
+- [X] T048 [P] [US4] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de `obtenerPanel` (totales, evento = 0 si no hay mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³dulo de eventos, sin acceso a datos internos) en `tests/integration/panel.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T049 [US4] Implementar el servicio del panel en `src/server/services/panel-service.ts` (totales de juntas y eventos agregados)
-- [ ] T050 [US4] Implementar `GET /api/reportes/plataforma.csv` en `src/app/api/reportes/plataforma.csv/route.ts` con `requireRole('super_admin')`
-- [ ] T051 [US4] Construir la pantalla "Panel de Control Territorial" (tarjetas, calendario, descargar reporte) en `src/app/(platform)/panel/page.tsx`
+- [X] T049 [US4] Implementar el servicio del panel en `src/server/services/panel-service.ts` (totales de juntas y eventos agregados)
+- [X] T050 [US4] Implementar `GET /api/reportes/plataforma.csv` en `src/app/api/reportes/plataforma.csv/route.ts` con `requireRole('super_admin')`
+- [X] T051 [US4] Construir la pantalla "Panel de Control Territorial" (tarjetas, calendario, descargar reporte) en `src/app/(platform)/panel/page.tsx`
 
 **Checkpoint**: US4 funcional
 

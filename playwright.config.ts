@@ -2,6 +2,8 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "tests/e2e",
+  // las pruebas comparten la misma base de datos: se ejecutan en serie para evitar carreras
+  workers: 1,
   timeout: 60_000,
   expect: { timeout: 15_000 },
   use: { baseURL: process.env.APP_URL ?? "http://localhost:3000" },
