@@ -8,6 +8,8 @@ import { asignarAdministradorAction, cambiarAdministradorAction } from "./action
 import { AdministradorForm } from "./AdministradorForm";
 import { Insignia } from "@/components/ui";
 
+export const metadata = { title: "Administrador de la junta" };
+
 export default async function AdministradorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!z.string().uuid().safeParse(id).success) notFound();

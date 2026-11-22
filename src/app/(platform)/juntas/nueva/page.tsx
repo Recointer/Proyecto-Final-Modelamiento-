@@ -1,6 +1,8 @@
 import { crearJuntaAction } from "../actions";
 import { JuntaForm } from "../JuntaForm";
 
+export const metadata = { title: "Nueva junta" };
+
 export default function NuevaJuntaPage() {
   return (
     <div>

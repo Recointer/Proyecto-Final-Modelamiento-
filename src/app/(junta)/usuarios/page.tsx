@@ -4,6 +4,8 @@ import { listarUsuarios } from "@/server/services/usuario-service";
 import { ETIQUETA_ROL, filtrosUsuarioSchema, ROLES_GESTIONABLES } from "@/server/validation/usuario";
 import { EstadoVacio, Insignia, Paginacion } from "@/components/ui";
 
+export const metadata = { title: "Cuentas de usuario" };
+
 type Params = Record<string, string | string[] | undefined>;
 const unico = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || undefined;
 
@@ -77,7 +79,7 @@ export default async function UsuariosPage({ searchParams }: { searchParams: Pro
           descripcion={hayFiltros ? "Pruebe con otros filtros." : "Use «Nueva cuenta» para crear la primera."}
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border bg-white">
+        <div className="relative overflow-x-auto rounded-xl border bg-white">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Cuentas de usuario de la junta</caption>
             <thead className="bg-slate-100 text-xs uppercase text-slate-600">

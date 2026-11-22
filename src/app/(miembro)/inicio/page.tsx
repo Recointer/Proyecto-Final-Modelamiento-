@@ -1,6 +1,8 @@
 import { AppShell } from "@/components/AppShell";
 import { exigirSesion } from "@/server/auth/page-guard";
 
+export const metadata = { title: "Inicio" };
+
 export default async function InicioMiembroPage() {
   const user = await exigirSesion(["secretario", "tesorero", "socio"]);
   return (

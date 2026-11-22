@@ -4,6 +4,8 @@ import { listarJuntas, listarUbicaciones } from "@/server/services/junta-service
 import { filtrosJuntaSchema, ETIQUETA_TIPO } from "@/server/validation/junta";
 import { EstadoVacio, Insignia, Paginacion } from "@/components/ui";
 
+export const metadata = { title: "Organizaciones comunitarias" };
+
 type Params = Record<string, string | string[] | undefined>;
 
 function unico(v: string | string[] | undefined): string | undefined {
@@ -96,7 +98,7 @@ export default async function JuntasPage({ searchParams }: { searchParams: Promi
           descripcion={hayFiltros ? "Pruebe con otros filtros." : "Use «Agregar Nueva Junta» para registrar la primera."}
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border bg-white">
+        <div className="relative overflow-x-auto rounded-xl border bg-white">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Organizaciones comunitarias registradas</caption>
             <thead className="bg-slate-100 text-xs uppercase text-slate-600">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sistema Multi-Junta de Gestión Integral",
+  title: { default: "Sistema Multi-Junta de Gestión Integral", template: "%s · Multi-Junta" },
   description: "Gestión integral para juntas parroquiales y comunitarias del Ecuador",
 };
 

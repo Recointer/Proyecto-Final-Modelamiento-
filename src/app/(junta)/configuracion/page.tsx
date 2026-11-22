@@ -7,6 +7,8 @@ import { ConfiguracionForm } from "./ConfiguracionForm";
 import { NuevoSectorForm } from "./NuevoSectorForm";
 import { editarSectorAction, eliminarSectorAction } from "./actions";
 
+export const metadata = { title: "Configuración de la junta" };
+
 const num = (n: number) => String(n).replace(".", ",");
 
 export default async function ConfiguracionPage({

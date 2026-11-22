@@ -210,11 +210,11 @@ description: "Lista de tareas: GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n 
 
 **Purpose**: calidad transversal
 
-- [ ] T062 [P] RevisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de accesibilidad WCAG 2.1 AA bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sica (contraste, etiquetas, teclado) en todas las pantallas de `src/app/`
-- [ ] T063 [P] RevisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de textos en espaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±ol y de adaptaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³vil de las pantallas de `src/app/`
-- [ ] T064 RevisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de seguridad: ningÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºn secreto en logs, cabeceras de seguridad en `next.config.ts`, 403 genÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rico para acceso entre juntas (FR-018)
-- [ ] T065 Ejecutar la validaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de [quickstart.md](quickstart.md) completa y corregir lo que falle
-- [ ] T066 [P] Escribir el `README.md` con instalaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n, variables de entorno y comandos del proyecto
+- [X] T062 [P] RevisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de accesibilidad WCAG 2.1 AA bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡sica (contraste, etiquetas, teclado) en todas las pantallas de `src/app/`
+- [X] T063 [P] RevisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de textos en espaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±ol y de adaptaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³vil de las pantallas de `src/app/`
+- [X] T064 RevisiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de seguridad: ningÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºn secreto en logs, cabeceras de seguridad en `next.config.ts`, 403 genÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rico para acceso entre juntas (FR-018)
+- [X] T065 Ejecutar la validaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de [quickstart.md](quickstart.md) completa y corregir lo que falle
+- [X] T066 [P] Escribir el `README.md` con instalaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n, variables de entorno y comandos del proyecto
 
 ---
 

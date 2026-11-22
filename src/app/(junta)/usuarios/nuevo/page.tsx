@@ -1,6 +1,8 @@
 import { contextoAdminJunta } from "@/server/auth/page-guard";
 import { UsuarioForm } from "../UsuarioForm";
 
+export const metadata = { title: "Nueva cuenta" };
+
 export default async function NuevoUsuarioPage() {
   await contextoAdminJunta();
   return (

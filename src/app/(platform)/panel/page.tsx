@@ -5,6 +5,8 @@ import { mesDe, parseMes } from "@/lib/fechas";
 import { Calendario } from "@/components/Calendario";
 import { EstadoVacio, Insignia } from "@/components/ui";
 
+export const metadata = { title: "Panel de control" };
+
 function Tarjeta({
   titulo,
   valor,

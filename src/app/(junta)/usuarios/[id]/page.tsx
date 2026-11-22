@@ -10,6 +10,8 @@ import { UsuarioForm } from "../UsuarioForm";
 import { RestablecerCredencial } from "../RestablecerCredencial";
 import { desactivarUsuarioAction, reactivarUsuarioAction } from "../actions";
 
+export const metadata = { title: "Detalle de cuenta" };
+
 export default async function UsuarioDetallePage({
   params,
   searchParams,

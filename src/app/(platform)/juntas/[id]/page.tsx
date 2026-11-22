@@ -9,6 +9,8 @@ import { ConfirmarAccion } from "@/components/ConfirmarAccion";
 import { Insignia } from "@/components/ui";
 import { MensajeError, MensajeExito } from "@/components/forms";
 
+export const metadata = { title: "Detalle de junta" };
+
 type Params = Record<string, string | string[] | undefined>;
 
 export default async function JuntaDetallePage({

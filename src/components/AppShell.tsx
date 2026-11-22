@@ -1,12 +1,9 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import type { UsuarioSesion } from "@/server/auth/session";
 import { cerrarSesionAction } from "@/app/(auth)/actions";
+import { NavLinks, type ItemNav } from "./NavLinks";
 
-export interface ItemNav {
-  href: string;
-  etiqueta: string;
-}
+export type { ItemNav };
 
 const ROLES: Record<string, string> = {
   super_admin: "Super Administrador",
@@ -27,22 +24,17 @@ export function AppShell({
 }) {
   return (
     <div className="min-h-screen md:flex">
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-slate-900 focus:shadow-lg"
+      >
+        Saltar al contenido
+      </a>
       <aside className="bg-slate-900 p-4 text-slate-100 md:w-64 md:shrink-0">
         <p className="text-lg font-bold">Multi-Junta</p>
         <p className="mb-4 text-xs text-slate-300">{user.juntaNombre ?? "Plataforma"}</p>
         <nav aria-label="Navegación principal">
-          <ul className="flex gap-2 overflow-x-auto md:flex-col">
-            {navegacion.map((n) => (
-              <li key={n.href}>
-                <Link
-                  href={n.href}
-                  className="block whitespace-nowrap rounded-lg px-3 py-2 hover:bg-slate-800"
-                >
-                  {n.etiqueta}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <NavLinks items={navegacion} />
         </nav>
       </aside>
       <div className="flex-1">
@@ -57,7 +49,9 @@ export function AppShell({
             </button>
           </form>
         </header>
-        <main className="p-4 md:p-6">{children}</main>
+        <main id="contenido" tabIndex={-1} className="p-4 outline-none md:p-6">
+          {children}
+        </main>
       </div>
     </div>
   );

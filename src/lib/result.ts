@@ -52,6 +52,17 @@ export function fail(codigo: string, mensaje?: string, campo?: string): Result<n
   return { ok: false, error: { codigo, mensaje: mensaje ?? MENSAJES[codigo] ?? codigo, campo } };
 }
 
+/**
+ * Describe un error para los logs sin incluir su mensaje: los errores de la base de datos traen la
+ * consulta con sus parámetros (hashes de contraseña, cédulas, correos) y no deben llegar a los logs.
+ */
+export function descripcionSegura(e: unknown): string {
+  const nombre = e instanceof Error ? e.name : typeof e;
+  const causa = (e as { cause?: { code?: string } } | undefined)?.cause;
+  const codigo = causa?.code ?? (e as { code?: string } | undefined)?.code;
+  return codigo ? `${nombre} (código ${codigo})` : nombre;
+}
+
 /** Envuelve una acción: convierte AppError en Result y oculta errores internos. */
 export async function ejecutar<T>(fn: () => Promise<T>): Promise<Result<T>> {
   try {
@@ -59,7 +70,7 @@ export async function ejecutar<T>(fn: () => Promise<T>): Promise<Result<T>> {
   } catch (e) {
     if (e instanceof AppError) return fail(e.codigo, e.message, e.campo);
     if (e && typeof e === "object" && "digest" in e) throw e; // redirect() de Next.js
-    console.error("Error interno:", e instanceof Error ? e.message : "desconocido");
+    console.error("Error interno:", descripcionSegura(e));
     return fail("ERROR_INTERNO");
   }
 }

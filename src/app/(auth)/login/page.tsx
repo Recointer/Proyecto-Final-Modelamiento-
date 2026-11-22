@@ -1,5 +1,7 @@
 import { LoginForm } from "./LoginForm";
 
+export const metadata = { title: "Iniciar sesión" };
+
 export default async function LoginPage({
   searchParams,
 }: {
