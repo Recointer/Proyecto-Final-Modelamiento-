@@ -24,10 +24,10 @@ export function detectarTipo(b: Uint8Array): TipoArchivo | null {
 /** Valida tipo y tamaño; lanza ACTA_INVALIDA si no cumple. */
 export function validarArchivo(contenido: Uint8Array): TipoArchivo {
   if (contenido.byteLength === 0 || contenido.byteLength > MAX_BYTES) {
-    throw new AppError("ACTA_INVALIDA", "El archivo debe pesar entre 1 byte y 5 MB.");
+    throw new AppError("ACTA_INVALIDA", "El archivo debe pesar entre 1 byte y 5 MB.", "acta");
   }
   const tipo = detectarTipo(contenido);
-  if (!tipo) throw new AppError("ACTA_INVALIDA", "Solo se permiten archivos PDF o imagen.");
+  if (!tipo) throw new AppError("ACTA_INVALIDA", "Solo se permiten archivos PDF o imagen.", "acta");
   return tipo;
 }
 

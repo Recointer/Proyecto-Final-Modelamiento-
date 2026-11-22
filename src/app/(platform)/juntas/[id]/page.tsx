@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireRole } from "@/server/auth/guard";
+import { contextoSuperAdmin } from "@/server/auth/page-guard";
 import { obtenerJunta } from "@/server/services/junta-service";
 import { z } from "zod";
 import { desactivarJuntaAction, editarJuntaAction, reactivarJuntaAction } from "../actions";
@@ -22,8 +22,7 @@ export default async function JuntaDetallePage({
   const sp = await searchParams;
   if (!z.string().uuid().safeParse(id).success) notFound();
 
-  const { ctx } = await requireRole("super_admin");
-  if (ctx.role !== "super_admin") return null;
+  const ctx = await contextoSuperAdmin();
   const j = await obtenerJunta(ctx, id);
   if (!j) notFound();
 
@@ -47,6 +46,14 @@ export default async function JuntaDetallePage({
       {aviso("desactivada") ? <MensajeExito mensaje="Junta desactivada. Sus usuarios ya no pueden ingresar; sus datos se conservan." /> : null}
       {aviso("reactivada") ? <MensajeExito mensaje="Junta reactivada." /> : null}
       <MensajeError mensaje={error} />
+
+      <section aria-labelledby="admin-titulo" className="max-w-2xl rounded-xl border bg-white p-5">
+        <h2 id="admin-titulo" className="font-bold">Administrador de la junta</h2>
+        <p className="my-2 text-sm text-slate-600">Asigne o cambie a la persona que administra esta junta.</p>
+        <Link href={`/juntas/${j.id}/administrador`} className="inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
+          Gestionar administrador
+        </Link>
+      </section>
 
       <JuntaForm
         accion={editarJuntaAction}

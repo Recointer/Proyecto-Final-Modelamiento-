@@ -1,4 +1,6 @@
 import { existsSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import postgres from "postgres";
 import { afterAll, beforeAll, beforeEach } from "vitest";
 import { migrate } from "@/server/db/migrate";
@@ -16,6 +18,7 @@ if (!adminUrl || !appUrl) {
 
 process.env.DATABASE_URL = appUrl;
 process.env.DATABASE_ADMIN_URL = adminUrl;
+process.env.FILE_STORE_DIR = path.join(os.tmpdir(), "multijunta-test-storage");
 
 let admin: postgres.Sql;
 

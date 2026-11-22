@@ -129,16 +129,16 @@ description: "Lista de tareas: GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n 
 
 ### Tests for User Story 3
 
-- [ ] T041 [P] [US3] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de asignaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n y cambio (cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dula invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida, acta invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida, motivo obligatorio, un solo administrador vigente, auditorÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a) en `tests/integration/administrador.test.ts`
-- [ ] T042 [P] [US3] Prueba E2E de asignar administrador y primer ingreso con cambio de contraseÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a en `tests/e2e/administrador.spec.ts`
+- [X] T041 [P] [US3] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de asignaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n y cambio (cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dula invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida, acta invÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida, motivo obligatorio, un solo administrador vigente, auditorÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a) en `tests/integration/administrador.test.ts`
+- [X] T042 [P] [US3] Prueba E2E de asignar administrador y primer ingreso con cambio de contraseÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a en `tests/e2e/administrador.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T043 [US3] Implementar el servicio de designaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n en `src/server/services/administrador-service.ts`: transacciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n que actualiza `designacion_administrador.vigente`, `designacion_administrador.motivo`, `usuario.rol` y credencial inicial (`usuario.debe_cambiar_password`), con validaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de `usuario.cedula`
-- [ ] T044 [US3] Implementar el Route Handler `POST /api/actas` en `src/app/api/actas/route.ts` usando `FileStore` (`designacion_administrador.acta_ruta`) y `requireRole('super_admin')`
-- [ ] T045 [US3] Implementar las Server Actions `asignarAdministrador` y `cambiarAdministrador` en `src/app/(platform)/juntas/[id]/administrador/actions.ts`
-- [ ] T046 [US3] Construir la pantalla "GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de Super Administradores" (tarjetas Asignar y Cambiar, con administrador actual) en `src/app/(platform)/juntas/[id]/administrador/page.tsx`
-- [ ] T047 [US3] Enviar al nuevo administrador su credencial inicial por correo mediante `src/server/mail/mailer.ts` desde `administrador-service.ts`
+- [X] T043 [US3] Implementar el servicio de designaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n en `src/server/services/administrador-service.ts`: transacciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n que actualiza `designacion_administrador.vigente`, `designacion_administrador.motivo`, `usuario.rol` y credencial inicial (`usuario.debe_cambiar_password`), con validaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de `usuario.cedula`
+- [X] T044 [US3] Implementar el Route Handler `POST /api/actas` en `src/app/api/actas/route.ts` usando `FileStore` (`designacion_administrador.acta_ruta`) y `requireRole('super_admin')`
+- [X] T045 [US3] Implementar las Server Actions `asignarAdministrador` y `cambiarAdministrador` en `src/app/(platform)/juntas/[id]/administrador/actions.ts`
+- [X] T046 [US3] Construir la pantalla "GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de Super Administradores" (tarjetas Asignar y Cambiar, con administrador actual) en `src/app/(platform)/juntas/[id]/administrador/page.tsx`
+- [X] T047 [US3] Enviar al nuevo administrador su credencial inicial por correo mediante `src/server/mail/mailer.ts` desde `administrador-service.ts`
 
 **Checkpoint**: US3 funcional; las juntas ya se pueden habilitar de punta a punta
 

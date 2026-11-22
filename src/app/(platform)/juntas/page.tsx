@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireRole } from "@/server/auth/guard";
+import { contextoSuperAdmin } from "@/server/auth/page-guard";
 import { listarJuntas, listarUbicaciones } from "@/server/services/junta-service";
 import { filtrosJuntaSchema, ETIQUETA_TIPO } from "@/server/validation/junta";
 import { EstadoVacio, Insignia, Paginacion } from "@/components/ui";
@@ -12,8 +12,7 @@ function unico(v: string | string[] | undefined): string | undefined {
 
 export default async function JuntasPage({ searchParams }: { searchParams: Promise<Params> }) {
   const sp = await searchParams;
-  const { ctx } = await requireRole("super_admin");
-  if (ctx.role !== "super_admin") return null;
+  const ctx = await contextoSuperAdmin();
 
   const parsed = filtrosJuntaSchema.safeParse({
     busqueda: unico(sp.busqueda),

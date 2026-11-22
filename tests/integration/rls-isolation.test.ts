@@ -70,6 +70,32 @@ describe("aislamiento por junta (RLS)", () => {
     expect(usuarios.every((u) => u.rol === "admin_junta" || u.rol === "super_admin")).toBe(true);
   });
 
+  it("degradar_administrador solo funciona para el super_admin y sobre un admin_junta de esa junta", async () => {
+    const { a, b } = await prepararDosJuntas();
+    const [adminA] = await adminSql()`SELECT id FROM usuario WHERE tenant_id = ${a} AND rol = 'admin_junta'`;
+    const [socioB] = await adminSql()`SELECT id FROM usuario WHERE tenant_id = ${b} AND rol = 'socio'`;
+    const llamar = (ctx: Parameters<typeof withTenant>[0], junta: string, usuarioId: string) =>
+      withTenant(ctx, (tx) => tx.execute(sqlTag`select degradar_administrador(${junta}::uuid, ${usuarioId}::uuid)`));
+
+    // un miembro de la junta no puede usarla, ni siquiera sobre su propia junta
+    await expect(llamar({ role: "tenant", tenantId: a, userId: "x" }, a, adminA!.id)).rejects.toThrow();
+    // el contexto de autenticación tampoco
+    await expect(llamar({ role: "auth" }, a, adminA!.id)).rejects.toThrow();
+    // el super_admin no puede degradar a un socio ni usar una junta que no corresponde
+    const sup = { role: "super_admin" as const, userId: "x" };
+    await expect(llamar(sup, b, socioB!.id)).rejects.toThrow();
+    await expect(llamar(sup, b, adminA!.id)).rejects.toThrow();
+    const sinCambios = await adminSql()`SELECT rol FROM usuario WHERE id IN (${adminA!.id}, ${socioB!.id}) ORDER BY rol`;
+    expect(sinCambios.map((r) => r.rol)).toEqual(["admin_junta", "socio"]);
+
+    // el caso válido sí funciona y no expone al socio resultante al super_admin
+    await llamar(sup, a, adminA!.id);
+    const [degradado] = await adminSql()`SELECT rol FROM usuario WHERE id = ${adminA!.id}`;
+    expect(degradado?.rol).toBe("socio");
+    const visibles = await withTenant(sup, (tx) => tx.select().from(usuario));
+    expect(visibles.some((u) => u.id === adminA!.id)).toBe(false);
+  });
+
   it("el rol de la aplicación no puede modificar ni borrar la auditoría", async () => {
     await prepararDosJuntas();
     await withTenant({ role: "super_admin", userId: "x" }, (tx) =>

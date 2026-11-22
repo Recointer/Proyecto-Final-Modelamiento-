@@ -185,3 +185,4 @@ El Administrador de la Junta crea, edita y desactiva las cuentas de usuario (usu
 - El rol de Administrador de la Junta puede ser ocupado por una sola persona a la vez por junta.
 - Se asume conexión a internet estable y uso desde navegadores actuales en móvil y escritorio.
 - La interfaz parte de los mockups del equipo (Portal de Acceso Comunal, Listado de Organizaciones, Panel de Control Territorial, Gestión de Super Administradores); las diferencias se justificarán en el plan.
+- El nuevo Administrador de la Junta debe ser una persona sin cuenta previa en esa junta: el Super Administrador no tiene acceso a los socios (aislamiento), por lo que no puede promover una cuenta existente. El administrador saliente conserva su cuenta como socio.

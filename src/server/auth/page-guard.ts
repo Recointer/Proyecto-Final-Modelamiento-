@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { destinoPorRol } from "@/lib/rutas";
+import type { DbContext } from "../db/context";
 import type { Rol } from "../db/schema";
+import { contextoDe } from "./guard";
 import { usuarioActual, type UsuarioSesion } from "./session";
 
 /** Para layouts y páginas: redirige si no hay sesión, debe cambiar contraseña o el rol no aplica. */
@@ -10,4 +12,12 @@ export async function exigirSesion(roles: Rol[]): Promise<UsuarioSesion> {
   if (user.debeCambiarPassword) redirect("/cambiar-password");
   if (!roles.includes(user.rol)) redirect(destinoPorRol(user.rol));
   return user;
+}
+
+/** Contexto de base de datos del Super Administrador para páginas (redirige si no corresponde). */
+export async function contextoSuperAdmin(): Promise<Extract<DbContext, { role: "super_admin" }>> {
+  const user = await exigirSesion(["super_admin"]);
+  const ctx = contextoDe(user);
+  if (ctx.role !== "super_admin") redirect(destinoPorRol(user.rol));
+  return ctx;
 }

@@ -41,6 +41,7 @@ export async function migrate(adminUrl: string, appUrl: string): Promise<void> {
       `GRANT SELECT, INSERT, UPDATE, DELETE ON junta, usuario, sector, designacion_administrador, sesion, token_recuperacion TO ${appUser}`,
     );
     await sql.unsafe(`GRANT SELECT, INSERT ON audit_log TO ${appUser}`);
+    await sql.unsafe(`GRANT EXECUTE ON FUNCTION degradar_administrador(uuid, uuid) TO ${appUser}`);
   } finally {
     await sql.end();
   }
