@@ -24,6 +24,9 @@ export const MENSAJES: Record<string, string> = {
   ACTA_INVALIDA: "El acta debe ser un PDF o imagen de hasta 5 MB.",
   JUNTA_YA_TIENE_ADMIN: "La junta ya tiene un administrador. Use «Cambiar administrador».",
   JUNTA_SIN_ADMIN: "La junta no tiene administrador.",
+  SECTOR_DUPLICADO: "Ya existe un sector con ese nombre.",
+  SECTOR_NO_ENCONTRADO: "El sector no existe.",
+  SECTOR_CON_ASOCIADOS: "No se puede eliminar: el sector tiene socios o predios asociados. Reasígnelos primero.",
   MOTIVO_REQUERIDO: "Indique el motivo del cambio.",
   ERROR_INTERNO: "Ocurrió un error inesperado. Intente nuevamente.",
 };

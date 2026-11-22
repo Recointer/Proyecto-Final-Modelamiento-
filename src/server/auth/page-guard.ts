@@ -21,3 +21,11 @@ export async function contextoSuperAdmin(): Promise<Extract<DbContext, { role: "
   if (ctx.role !== "super_admin") redirect(destinoPorRol(user.rol));
   return ctx;
 }
+
+/** Contexto de base de datos del Administrador de la Junta para páginas (redirige si no corresponde). */
+export async function contextoAdminJunta(): Promise<Extract<DbContext, { role: "tenant" }>> {
+  const user = await exigirSesion(["admin_junta"]);
+  const ctx = contextoDe(user);
+  if (ctx.role !== "tenant") redirect(destinoPorRol(user.rol));
+  return ctx;
+}

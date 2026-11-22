@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "tsx --env-file=.env src/server/db/migrate.ts",
     "db:seed": "tsx --env-file=.env src/server/db/seed.ts",
+    "db:limpiar-e2e": "tsx --env-file=.env src/server/db/limpiar-e2e.ts",
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "test:e2e": "node --env-file=.env ./node_modules/@playwright/test/cli.js test"

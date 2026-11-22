@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { useFormStatus } from "react-dom";
 import type { ReactNode } from "react";
 
@@ -14,7 +15,8 @@ export function Campo(props: {
   error?: string;
   defaultValue?: string;
 }) {
-  const id = `campo-${props.nombre}`;
+  // id único: varios formularios pueden compartir el nombre de campo en la misma página
+  const id = `campo-${props.nombre}-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
     <div className="space-y-1">
       <label htmlFor={id} className="block text-sm font-semibold text-slate-800">

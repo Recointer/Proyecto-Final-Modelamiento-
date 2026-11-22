@@ -172,13 +172,13 @@ description: "Lista de tareas: GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n 
 
 ### Tests for User Story 5
 
-- [ ] T052 [P] [US5] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de configuraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n y sectores (unicidad `sector.nombre` por junta, bloqueo de eliminaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n con asociados, acceso a otra junta denegado) en `tests/integration/configuracion.test.ts`
+- [X] T052 [P] [US5] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de configuraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n y sectores (unicidad `sector.nombre` por junta, bloqueo de eliminaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n con asociados, acceso a otra junta denegado) en `tests/integration/configuracion.test.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T053 [US5] Implementar el servicio de configuraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n y sectores en `src/server/services/configuracion-service.ts` (incluye `junta.parametros`, `sector.nombre`, verificaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de asociados)
-- [ ] T054 [US5] Implementar las Server Actions `obtenerConfiguracion`, `actualizarConfiguracion`, `crearSector`, `editarSector`, `eliminarSector` en `src/app/(junta)/configuracion/actions.ts` con `requireRole('admin_junta')`
-- [ ] T055 [US5] Construir la pantalla de configuraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de la junta y gestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de sectores en `src/app/(junta)/configuracion/page.tsx`
+- [X] T053 [US5] Implementar el servicio de configuraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n y sectores en `src/server/services/configuracion-service.ts` (incluye `junta.parametros`, `sector.nombre`, verificaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de asociados)
+- [X] T054 [US5] Implementar las Server Actions `obtenerConfiguracion`, `actualizarConfiguracion`, `crearSector`, `editarSector`, `eliminarSector` en `src/app/(junta)/configuracion/actions.ts` con `requireRole('admin_junta')`
+- [X] T055 [US5] Construir la pantalla de configuraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de la junta y gestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de sectores en `src/app/(junta)/configuracion/page.tsx`
 
 **Checkpoint**: US5 funcional
 
