@@ -7,7 +7,7 @@ const password = process.env.E2E_SUPERADMIN_PASSWORD ?? "";
 async function ingresar(page: Page) {
   await page.goto("/login");
   await page.getByLabel(/Correo electrónico o número de cédula/).fill(correo);
-  await page.getByLabel("Contraseña", { exact: true }).fill(password);
+  await page.getByLabel(/^Contraseña/).fill(password);
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
   await expect(page).toHaveURL(/\/panel/);
 }
@@ -35,7 +35,7 @@ test.describe("administrar juntas (RF-01)", () => {
     await page.getByLabel(/Cantón/).fill("Ambato");
     await page.getByLabel(/Parroquia/).fill(`Parroquia ${sufijo}`);
     await page.getByRole("button", { name: "Registrar junta" }).click();
-    await expect(page.getByRole("alert")).toContainText("Ya existe una junta");
+    await expect(page.getByRole("alert").filter({ hasText: "Ya existe una junta" })).toBeVisible();
 
     // búsqueda en el listado
     await page.goto(`/juntas?busqueda=${encodeURIComponent(nombre)}`);

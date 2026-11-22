@@ -14,16 +14,16 @@ test("redirige a login si no hay sesión", async ({ page }) => {
 test("credenciales incorrectas muestran un mensaje genérico", async ({ page }) => {
   await page.goto("/login");
   await page.getByLabel(/Correo electrónico o número de cédula/).fill("nadie@correo.com");
-  await page.getByLabel("Contraseña", { exact: true }).fill("incorrecta123");
+  await page.getByLabel(/^Contraseña/).fill("incorrecta123");
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
-  await expect(page.getByRole("alert")).toContainText("Credenciales incorrectas");
+  await expect(page.getByRole("alert").filter({ hasText: "Credenciales incorrectas" })).toBeVisible();
 });
 
 test("el Super Administrador inicia y cierra sesión", async ({ page }) => {
   test.skip(!correo || !password, "Defina E2E_SUPERADMIN_CORREO y E2E_SUPERADMIN_PASSWORD");
   await page.goto("/login");
   await page.getByLabel(/Correo electrónico o número de cédula/).fill(correo);
-  await page.getByLabel("Contraseña", { exact: true }).fill(password);
+  await page.getByLabel(/^Contraseña/).fill(password);
   await page.getByRole("button", { name: "Iniciar sesión" }).click();
   await expect(page).toHaveURL(/\/panel/);
   await page.getByRole("button", { name: "Cerrar sesión" }).click();
