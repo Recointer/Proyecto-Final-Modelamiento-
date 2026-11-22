@@ -192,15 +192,15 @@ description: "Lista de tareas: GestiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n 
 
 ### Tests for User Story 6
 
-- [ ] T056 [P] [US6] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n del servicio de usuarios (cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dula y correo ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºnicos por junta, roles permitidos, no desactivarse a sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ mismo, cierre de sesiones al desactivar, auditorÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a) en `tests/integration/usuarios.test.ts`
-- [ ] T057 [P] [US6] Prueba E2E de crear cuenta, primer ingreso y desactivaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n en `tests/e2e/usuarios.spec.ts`
+- [X] T056 [P] [US6] Prueba de integraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n del servicio de usuarios (cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dula y correo ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºnicos por junta, roles permitidos, no desactivarse a sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ mismo, cierre de sesiones al desactivar, auditorÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a) en `tests/integration/usuarios.test.ts`
+- [X] T057 [P] [US6] Prueba E2E de crear cuenta, primer ingreso y desactivaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n en `tests/e2e/usuarios.spec.ts`
 
 ### Implementation for User Story 6
 
-- [ ] T058 [US6] Implementar el servicio de usuarios en `src/server/services/usuario-service.ts`: unicidad de `usuario.cedula` y `usuario.correo` por `usuario.tenant_id`, `usuario.rol` limitado a secretario/tesorero/socio, `usuario.estado`, credencial inicial con `usuario.debe_cambiar_password`
-- [ ] T059 [US6] Implementar las Server Actions `listarUsuarios`, `crearUsuario`, `editarUsuario`, `desactivarUsuario`, `reactivarUsuario`, `restablecerCredencialInicial` en `src/app/(junta)/usuarios/actions.ts` con `requireRole('admin_junta')`
-- [ ] T060 [US6] Construir la pantalla de listado de cuentas con bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsqueda y filtros en `src/app/(junta)/usuarios/page.tsx`
-- [ ] T061 [P] [US6] Construir el formulario de alta/ediciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de cuenta (con mostrar credencial inicial una sola vez) en `src/app/(junta)/usuarios/UsuarioForm.tsx`
+- [X] T058 [US6] Implementar el servicio de usuarios en `src/server/services/usuario-service.ts`: unicidad de `usuario.cedula` y `usuario.correo` por `usuario.tenant_id`, `usuario.rol` limitado a secretario/tesorero/socio, `usuario.estado`, credencial inicial con `usuario.debe_cambiar_password`
+- [X] T059 [US6] Implementar las Server Actions `listarUsuarios`, `crearUsuario`, `editarUsuario`, `desactivarUsuario`, `reactivarUsuario`, `restablecerCredencialInicial` en `src/app/(junta)/usuarios/actions.ts` con `requireRole('admin_junta')`
+- [X] T060 [US6] Construir la pantalla de listado de cuentas con bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsqueda y filtros en `src/app/(junta)/usuarios/page.tsx`
+- [X] T061 [P] [US6] Construir el formulario de alta/ediciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de cuenta (con mostrar credencial inicial una sola vez) en `src/app/(junta)/usuarios/UsuarioForm.tsx`
 
 **Checkpoint**: todas las historias funcionan
 

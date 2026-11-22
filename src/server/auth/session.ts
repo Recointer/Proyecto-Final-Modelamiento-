@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import { withTenant, type Db } from "../db/context";
 import { junta, sesion, usuario, type Rol } from "../db/schema";
 import { hashToken, nuevoToken } from "./password";
@@ -101,8 +101,9 @@ export async function revocarToken(token: string): Promise<void> {
   );
 }
 
+/** Cierra todas las sesiones de un usuario (función acotada por contexto; ver migración 0004). */
 export async function revocarSesionesDeUsuario(tx: Db, userId: string): Promise<void> {
-  await tx.delete(sesion).where(eq(sesion.usuarioId, userId));
+  await tx.execute(sql`select revocar_sesiones_usuario(${userId}::uuid)`);
 }
 
 export async function revocarSesionesDeJunta(tx: Db, juntaId: string): Promise<void> {

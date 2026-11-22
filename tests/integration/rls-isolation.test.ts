@@ -96,6 +96,29 @@ describe("aislamiento por junta (RLS)", () => {
     expect(visibles.some((u) => u.id === adminA!.id)).toBe(false);
   });
 
+  it("revocar_sesiones_usuario solo cierra sesiones de la propia junta y no deja leer la tabla de sesiones", async () => {
+    const { a, b } = await prepararDosJuntas();
+    const [uA] = await adminSql()`SELECT id FROM usuario WHERE tenant_id = ${a} LIMIT 1`;
+    const [uB] = await adminSql()`SELECT id FROM usuario WHERE tenant_id = ${b} AND rol = 'admin_junta'`;
+    await adminSql()`
+      INSERT INTO sesion (usuario_id, tenant_id, token_hash, expira_en) VALUES
+        (${uA!.id}, ${a}, 'hash-a', now() + interval '1 hour'),
+        (${uB!.id}, ${b}, 'hash-b', now() + interval '1 hour')`;
+    const ctxA = { role: "tenant" as const, tenantId: a, userId: "x" };
+
+    // un miembro de la junta A no puede leer la tabla de sesiones
+    expect(await withTenant(ctxA, (tx) => tx.execute(sqlTag`SELECT * FROM sesion`))).toHaveLength(0);
+
+    // ni cerrar las sesiones de un usuario de la junta B
+    await withTenant(ctxA, (tx) => tx.execute(sqlTag`select revocar_sesiones_usuario(${uB!.id}::uuid)`));
+    expect(await adminSql()`SELECT 1 FROM sesion WHERE usuario_id = ${uB!.id}`).toHaveLength(1);
+
+    // sí las de su propia junta
+    await withTenant(ctxA, (tx) => tx.execute(sqlTag`select revocar_sesiones_usuario(${uA!.id}::uuid)`));
+    expect(await adminSql()`SELECT 1 FROM sesion WHERE usuario_id = ${uA!.id}`).toHaveLength(0);
+    expect(await adminSql()`SELECT 1 FROM sesion WHERE usuario_id = ${uB!.id}`).toHaveLength(1);
+  });
+
   it("el rol de la aplicación no puede modificar ni borrar la auditoría", async () => {
     await prepararDosJuntas();
     await withTenant({ role: "super_admin", userId: "x" }, (tx) =>

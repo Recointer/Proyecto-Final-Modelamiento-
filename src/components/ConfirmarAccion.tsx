@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useId, useRef, type ReactNode } from "react";
 
 /**
  * Botón que abre un diálogo de confirmación accesible antes de ejecutar la acción
@@ -24,6 +24,7 @@ export function ConfirmarAccion({
   peligro?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const idTitulo = `dlg-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
     <>
       <button
@@ -35,12 +36,12 @@ export function ConfirmarAccion({
       >
         {etiqueta}
       </button>
-      <dialog ref={ref} aria-labelledby="dlg-titulo" className="m-auto w-[min(92vw,28rem)] rounded-xl p-0 backdrop:bg-black/40">
-        <form action={action} className="space-y-4 p-6">
+      <dialog ref={ref} aria-labelledby={idTitulo} className="m-auto w-[min(92vw,28rem)] rounded-xl p-0 backdrop:bg-black/40">
+        <form action={action} onSubmit={() => ref.current?.close()} className="space-y-4 p-6">
           {Object.entries(campos ?? {}).map(([k, v]) => (
             <input key={k} type="hidden" name={k} value={v} />
           ))}
-          <h2 id="dlg-titulo" className="text-lg font-bold">
+          <h2 id={idTitulo} className="text-lg font-bold">
             {titulo}
           </h2>
           <div className="text-sm text-slate-700">{mensaje}</div>
