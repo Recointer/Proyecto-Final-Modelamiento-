@@ -29,7 +29,7 @@ export function SemanaCalendario({ calendario, titulo }: { calendario: Calendari
         {vacio ? (
           <p className="rounded-xl border bg-white p-4 text-sm text-slate-600">Este sector aún no tiene turnos asignados.</p>
         ) : (
-          <div className="overflow-x-auto rounded-xl border bg-white">
+          <div role="region" aria-label="Calendario semanal de turnos (desplazable)" tabIndex={0} className="relative overflow-x-auto rounded-xl border bg-white">
             <table className="w-full text-left text-sm">
               <caption className="sr-only">Calendario semanal de turnos</caption>
               <thead className="bg-slate-100 text-xs uppercase text-slate-600">

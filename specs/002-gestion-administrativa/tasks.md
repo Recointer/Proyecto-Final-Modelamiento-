@@ -179,18 +179,18 @@ description: "Lista de tareas: Gestión Administrativa"
 
 ### Tests for User Story 5
 
-- [ ] T061 [P] [US5] Prueba unitaria de `calcularCumplimiento` (presentes sobre presentes más ausentes, justificadas ni penalizan ni suman, sin eventos computables es «no aplica», redondeo, meta del 80 %) en `tests/unit/cumplimiento.test.ts`
-- [ ] T062 [P] [US5] Prueba de integración de `mi-informacion-service` (solo cuenta con `socio.cedula` igual a la del usuario, `NO_EN_PADRON`, historial solo con eventos no anulados y de fecha igual o posterior a `socio.fecha_ingreso`, filtro por `evento.tipo`, un Socio no obtiene datos de otro socio, predios solo los suyos) en `tests/integration/mi-informacion.test.ts`
-- [ ] T063 [P] [US5] Prueba de integración del PDF (respuesta `application/pdf` que empieza por `%PDF`, solo del propio socio, 401 sin sesión) en `tests/integration/historial-pdf.test.ts`
-- [ ] T064 [P] [US5] Prueba E2E del Socio (ficha, predios, calendario de su sector, historial con porcentaje, descarga del PDF, aviso de cuenta sin padrón) en `tests/e2e/socio.spec.ts`
+- [X] T061 [P] [US5] Prueba unitaria de `calcularCumplimiento` (presentes sobre presentes más ausentes, justificadas ni penalizan ni suman, sin eventos computables es «no aplica», redondeo, meta del 80 %) en `tests/unit/cumplimiento.test.ts`
+- [X] T062 [P] [US5] Prueba de integración de `mi-informacion-service` (solo cuenta con `socio.cedula` igual a la del usuario, `NO_EN_PADRON`, historial solo con eventos no anulados y de fecha igual o posterior a `socio.fecha_ingreso`, filtro por `evento.tipo`, un Socio no obtiene datos de otro socio, predios solo los suyos) en `tests/integration/mi-informacion.test.ts`
+- [X] T063 [P] [US5] Prueba de integración del PDF (respuesta `application/pdf` que empieza por `%PDF`, solo del propio socio, 401 sin sesión) en `tests/integration/historial-pdf.test.ts`
+- [X] T064 [P] [US5] Prueba E2E del Socio (ficha, predios, calendario de su sector, historial con porcentaje, descarga del PDF, aviso de cuenta sin padrón) en `tests/e2e/socio.spec.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T065 [P] [US5] Crear `src/lib/cumplimiento.ts` con `calcularCumplimiento` (research.md §5) y la meta de referencia del 80 %
-- [ ] T066 [US5] Implementar `src/server/services/mi-informacion-service.ts`: `obtenerMiInformacion` (ficha, sector, predios) y `obtenerMiHistorial` (eventos con su estado, totales y cumplimiento), siempre acotados por `socioDeSesion`
-- [ ] T067 [US5] Implementar `src/server/reportes/historial-pdf.ts` con `pdf-lib` (nombre, cédula, junta, fecha de emisión, detalle por evento, totales y porcentaje, fuente estándar con tildes) y la ruta `src/app/api/mi/asistencia.pdf/route.ts` (solo rol Socio, `Cache-Control: no-store`)
-- [ ] T068 [P] [US5] Construir `src/components/TarjetaCumplimiento.tsx` (porcentaje, meta y totales presentes, justificadas e injustificadas)
-- [ ] T069 [US5] Construir las pantallas del Socio en `src/app/(miembro)/mi/informacion/page.tsx` y `src/app/(miembro)/mi/asistencia/page.tsx` (filtro por tipo y botón de descarga) y actualizar `src/app/(miembro)/inicio/page.tsx` con el resumen y los accesos; los Socios acceden a `/predios` y `/calendario` en modo de solo lectura acotado
+- [X] T065 [P] [US5] Crear `src/lib/cumplimiento.ts` con `calcularCumplimiento` (research.md §5) y la meta de referencia del 80 %
+- [X] T066 [US5] Implementar `src/server/services/mi-informacion-service.ts`: `obtenerMiInformacion` (ficha, sector, predios) y `obtenerMiHistorial` (eventos con su estado, totales y cumplimiento), siempre acotados por `socioDeSesion`
+- [X] T067 [US5] Implementar `src/server/reportes/historial-pdf.ts` con `pdf-lib` (nombre, cédula, junta, fecha de emisión, detalle por evento, totales y porcentaje, fuente estándar con tildes) y la ruta `src/app/api/mi/asistencia.pdf/route.ts` (solo rol Socio, `Cache-Control: no-store`)
+- [X] T068 [P] [US5] Construir `src/components/TarjetaCumplimiento.tsx` (porcentaje, meta y totales presentes, justificadas e injustificadas)
+- [X] T069 [US5] Construir las pantallas del Socio en `src/app/(miembro)/mi/informacion/page.tsx` y `src/app/(miembro)/mi/asistencia/page.tsx` (filtro por tipo y botón de descarga) y actualizar `src/app/(miembro)/inicio/page.tsx` con el resumen y los accesos; los Socios acceden a `/predios` y `/calendario` en modo de solo lectura acotado
 
 **Checkpoint**: todas las historias funcionan
 
@@ -200,11 +200,11 @@ description: "Lista de tareas: Gestión Administrativa"
 
 **Purpose**: calidad transversal
 
-- [ ] T070 [P] Ampliar `tests/e2e/accesibilidad.spec.ts` para auditar con axe (escritorio y móvil) las pantallas nuevas de socios, eventos, asistencia, predios, servicios, calendario y del Socio, y los títulos descriptivos en cada una
-- [ ] T071 [P] Revisar textos en español, la vista móvil y el foco del teclado de las pantallas nuevas en `src/app/(gestion)/` y `src/app/(miembro)/`
-- [ ] T072 Revisión de seguridad: ninguna imagen ni ruta de archivo expuestas, el mapa y el PDF no registran datos personales en logs, `npm audit` sin vulnerabilidades y comprobar que ninguna consulta del Socio acepta un `socio_id` del cliente (FR-021)
-- [ ] T073 [P] Actualizar `README.md` (estado del módulo, variables de Google Maps y pruebas nuevas) y `specs/001-gestion-plataforma/quickstart.md` si cambian comandos
-- [ ] T074 Ejecutar la validación de [quickstart.md](quickstart.md) completa desde una base nueva y corregir lo que falle
+- [X] T070 [P] Ampliar `tests/e2e/accesibilidad.spec.ts` para auditar con axe (escritorio y móvil) las pantallas nuevas de socios, eventos, asistencia, predios, servicios, calendario y del Socio, y los títulos descriptivos en cada una
+- [X] T071 [P] Revisar textos en español, la vista móvil y el foco del teclado de las pantallas nuevas en `src/app/(gestion)/` y `src/app/(miembro)/`
+- [X] T072 Revisión de seguridad: ninguna imagen ni ruta de archivo expuestas, el mapa y el PDF no registran datos personales en logs, `npm audit` sin vulnerabilidades y comprobar que ninguna consulta del Socio acepta un `socio_id` del cliente (FR-021)
+- [X] T073 [P] Actualizar `README.md` (estado del módulo, variables de Google Maps y pruebas nuevas) y `specs/001-gestion-plataforma/quickstart.md` si cambian comandos
+- [X] T074 Ejecutar la validación de [quickstart.md](quickstart.md) completa desde una base nueva y corregir lo que falle
 
 ---
 

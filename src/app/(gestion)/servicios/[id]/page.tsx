@@ -54,7 +54,7 @@ export default async function ServicioDetallePage({
         {s.turnosDetalle.length === 0 ? (
           <p className="rounded-xl border bg-white p-4 text-sm text-slate-600">Este servicio aún no tiene turnos.</p>
         ) : (
-          <div className="overflow-x-auto rounded-xl border bg-white">
+          <div role="region" aria-label="Turnos del servicio (desplazable)" tabIndex={0} className="relative overflow-x-auto rounded-xl border bg-white">
             <table className="w-full text-left text-sm">
               <caption className="sr-only">Turnos del servicio</caption>
               <thead className="bg-slate-100 text-xs uppercase text-slate-600">

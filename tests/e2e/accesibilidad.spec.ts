@@ -1,6 +1,19 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { crearJuntaConAdmin, ingresarComoSuper, SUPER_CORREO, SUPER_PASSWORD } from "./helpers";
+import { hoyEcuador } from "../../src/lib/fechas";
+import {
+  CEDULA_ADMIN,
+  CEDULA_SECRETARIO,
+  crearCuentaYEntrar,
+  crearJuntaConAdmin,
+  crearSectorUI,
+  crearSocioUI,
+  entrarComo,
+  ingresarComoSuper,
+  PASSWORD_ADMIN,
+  SUPER_CORREO,
+  SUPER_PASSWORD,
+} from "./helpers";
 
 // Requiere la app en marcha y el seed del Super Administrador (ver quickstart.md).
 // Cada pantalla se audita con axe (WCAG 2.0/2.1 A y AA) en escritorio y en móvil (375 px),
@@ -78,6 +91,92 @@ test.describe("accesibilidad y vista móvil", () => {
     await page.getByRole("link", { name: /Ver y editar/ }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await auditar(page, "detalle de cuenta");
+  });
+
+  test("pantallas del módulo administrativo (Secretario/a y Socio)", async ({ page }) => {
+    test.setTimeout(480_000);
+    const sufijo = Date.now().toString(36);
+    const { slug } = await crearJuntaConAdmin(page, sufijo);
+    // el mapa se prueba en su versión degradada (sin red): es la que debe ser accesible en cualquier caso
+    await page.route("https://maps.googleapis.com/**", (r) => r.abort());
+    await crearSectorUI(page, "Norte");
+    await crearCuentaYEntrar(page, slug, { cedula: CEDULA_SECRETARIO, nombres: "Rosa Secretaria", rol: "secretario", sufijo });
+    await crearSocioUI(page, { cedula: "1710000033", nombres: "Ana Torres", sector: "Norte" });
+
+    // datos mínimos para que las pantallas tengan contenido
+    await page.goto("/predios/nuevo");
+    await page.getByLabel(/^Código del predio/).fill("P-001");
+    await page.getByLabel(/^Nombre del predio/).fill("Parcela uno");
+    await page.getByLabel(/^Superficie/).fill("1,5");
+    await page.getByLabel(/^Latitud/).fill("-1.25431");
+    await page.getByLabel(/^Longitud/).fill("-78.62312");
+    await page.getByLabel(/^Sector/).selectOption({ label: "Norte" });
+    await page.getByLabel(/^Socio titular/).selectOption({ label: "Ana Torres (1710000033)" });
+    await page.getByRole("button", { name: "Guardar predio" }).click();
+    await expect(page.getByText("Predio registrado correctamente.")).toBeVisible();
+    const idPredio = /\/predios\/([0-9a-f-]{36})/.exec(page.url())?.[1];
+
+    await page.goto("/eventos/nuevo");
+    await page.getByLabel(/^Título/).fill("Asamblea de prueba");
+    await page.getByLabel(/^Fecha/).fill(hoyEcuador());
+    await page.getByLabel(/^Lugar/).fill("Casa comunal");
+    await page.getByRole("button", { name: "Guardar evento" }).click();
+    await expect(page.getByText("Evento registrado correctamente.")).toBeVisible();
+    const idEvento = /\/eventos\/([0-9a-f-]{36})/.exec(page.url())?.[1];
+    await page.getByRole("link", { name: "Tomar asistencia" }).click();
+    await page.getByRole("button", { name: /Marcar todos presentes/ }).click();
+    await page.getByRole("button", { name: "Guardar asistencia" }).click();
+    await expect(page.getByText(/Asistencia guardada/)).toBeVisible();
+
+    await page.goto("/servicios/nuevo");
+    await page.getByLabel(/^Nombre del servicio/).fill("Riego general");
+    await page.getByLabel(/^Tipo/).selectOption({ label: "Agua de riego" });
+    await page.getByRole("button", { name: "Guardar servicio" }).click();
+    await expect(page.getByText("Servicio registrado correctamente.")).toBeVisible();
+    const idServicio = /\/servicios\/([0-9a-f-]{36})/.exec(page.url())?.[1];
+    const f = page.getByRole("form", { name: "Agregar turno" });
+    await f.getByLabel(/^Sector/).selectOption({ label: "Norte" });
+    await f.getByLabel(/^Día/).selectOption({ label: "Martes" });
+    await f.getByLabel(/^Hora de inicio/).fill("20:00");
+    await f.getByLabel(/^Hora de fin/).fill("22:00");
+    await f.getByRole("button", { name: "Agregar turno" }).click();
+    await expect(page.getByRole("table", { name: "Turnos del servicio" }).getByRole("cell", { name: "20:00 – 22:00" })).toBeVisible();
+
+    const pantallas: [string, string, string][] = [
+      ["/socios", "Nómina de socios", "nómina de socios"],
+      ["/socios/nuevo", "Nuevo socio", "nuevo socio"],
+      ["/eventos", "Eventos y asistencia", "eventos"],
+      ["/eventos/nuevo", "Nuevo evento", "nuevo evento"],
+      [`/eventos/${idEvento}`, "Detalle del evento", "detalle de evento"],
+      [`/eventos/${idEvento}/asistencia`, "Asistencia", "asistencia"],
+      ["/predios", "Predios y mapa", "predios y mapa"],
+      ["/predios/nuevo", "Nuevo predio", "nuevo predio"],
+      [`/predios/${idPredio}`, "Ficha del predio", "ficha de predio"],
+      ["/servicios", "Servicios y turnos", "servicios"],
+      ["/servicios/nuevo", "Nuevo servicio", "nuevo servicio"],
+      [`/servicios/${idServicio}`, "Servicio y turnos", "detalle de servicio"],
+      ["/calendario", "Calendario semanal", "calendario (personal)"],
+    ];
+    for (const [ruta, titulo, nombre] of pantallas) {
+      await page.goto(ruta);
+      await expect(page, `Título de ${ruta}`).toHaveTitle(new RegExp(`^${titulo}`));
+      await auditar(page, nombre);
+    }
+
+    // pantallas del Socio
+    await entrarComo(page, slug, CEDULA_ADMIN, PASSWORD_ADMIN);
+    await crearCuentaYEntrar(page, slug, { cedula: "1710000033", nombres: "Ana Torres", rol: "socio", sufijo });
+    await auditar(page, "/inicio (Socio)");
+    for (const [ruta, titulo, nombre] of [
+      ["/mi/informacion", "Mi información", "mi información"],
+      ["/mi/asistencia", "Mi asistencia", "mi asistencia"],
+      ["/predios", "Predios y mapa", "mis predios"],
+      ["/calendario", "Calendario semanal", "calendario (Socio)"],
+    ] as const) {
+      await page.goto(ruta);
+      await expect(page, `Título de ${ruta}`).toHaveTitle(new RegExp(`^${titulo}`));
+      await auditar(page, nombre);
+    }
   });
 });
 

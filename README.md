@@ -12,7 +12,7 @@ desarrollado con **Spec-Driven Development** usando [GitHub Spec Kit](https://gi
 | Módulo | Estado |
 |--------|--------|
 | **Gestión de Plataforma** (inicio de sesión, juntas, administrador, panel, configuración, cuentas) | Implementado |
-| Gestión Administrativa (socios, asistencia, predios, calendario) | En curso: nómina de socios, eventos y asistencia implementados; predios con mapa, calendario y consulta del Socio pendientes |
+| Gestión Administrativa (socios, asistencia, predios, calendario) | Completo: nómina de socios, eventos y asistencia con quórum, predios con mapa de Google (con degradación a lista), servicios con turnos y calendario semanal, y consulta del Socio con historial de asistencia en PDF |
 | Gestión Financiera (ingresos, egresos, multas, comprobantes, inventarios, reportes) | Pendiente |
 | Gestión de Comunicaciones (convocatorias, actas, mensajería) | Pendiente |
 

@@ -27,7 +27,7 @@ export default async function ServiciosPage() {
       {servicios.length === 0 ? (
         <EstadoVacio titulo="Aún no hay servicios registrados" descripcion={puedeEditar ? "Use «Nuevo servicio» para registrar el primero." : undefined} />
       ) : (
-        <div className="overflow-x-auto rounded-xl border bg-white">
+        <div role="region" aria-label="Servicios de la junta (desplazable)" tabIndex={0} className="relative overflow-x-auto rounded-xl border bg-white">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Servicios de la junta</caption>
             <thead className="bg-slate-100 text-xs uppercase text-slate-600">

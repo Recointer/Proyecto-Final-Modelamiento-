@@ -7,7 +7,7 @@ export interface ItemNav {
  * Módulos ya implementados. Se amplía a medida que se entregan las historias, para que el menú
  * nunca enlace a pantallas inexistentes.
  */
-export const MODULOS_DISPONIBLES = new Set<string>(["socios", "eventos", "predios", "servicios", "calendario"]);
+export const MODULOS_DISPONIBLES = new Set<string>(["socios", "eventos", "predios", "servicios", "calendario", "mi-informacion", "mi-asistencia"]);
 
 interface Entrada extends ItemNav {
   modulo: string;
