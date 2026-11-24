@@ -1,7 +1,7 @@
 import { sql, desc } from "drizzle-orm";
 import { generarCsv } from "@/lib/csv";
 import { inicioDeMes, mesAnterior, mesDe, mesSiguiente, type MesCalendario } from "@/lib/fechas";
-import { withTenant, type DbContext } from "../db/context";
+import { withTenant, type Db, type DbContext } from "../db/context";
 import { junta } from "../db/schema";
 
 type CtxSuper = Extract<DbContext, { role: "super_admin" }>;
@@ -26,13 +26,23 @@ export interface Panel {
 }
 
 /**
- * Los eventos (asambleas, mingas) los define el módulo administrativo. Mientras ese módulo no
- * exista el total es 0. Cuando exista, el conteo debe hacerse con una función agregada
- * SECURITY DEFINER (que reciba el mes mostrado en el calendario): el super_admin nunca debe leer
- * filas internas de las juntas (Principio I).
+ * Total de eventos y cantidad por día del mes mostrado, mediante funciones SECURITY DEFINER que solo
+ * devuelven cifras (sin títulos ni identificar la junta): el super_admin nunca lee filas internas de
+ * las juntas (Principio I). El calendario del panel muestra «N eventos» por día.
  */
-async function contarEventos(): Promise<{ total: number; delMes: EventoCalendario[] }> {
-  return { total: 0, delMes: [] };
+async function contarEventos(
+  tx: Db,
+  mes: MesCalendario,
+): Promise<{ total: number; delMes: EventoCalendario[] }> {
+  const [t] = await tx.execute(sql`select total_eventos_plataforma() as n`);
+  const filas = await tx.execute(sql`select dia, total from eventos_plataforma_por_dia(${mes.anio}::int, ${mes.mes}::int)`);
+  return {
+    total: Number((t as { n: number } | undefined)?.n ?? 0),
+    delMes: (filas as unknown as { dia: number; total: number }[]).map((f) => ({
+      dia: Number(f.dia),
+      titulo: Number(f.total) === 1 ? "1 evento" : `${Number(f.total)} eventos`,
+    })),
+  };
 }
 
 /**
@@ -49,9 +59,8 @@ export async function obtenerPanel(
   const inicioSiguiente = inicioDeMes(mesSiguiente(actual)).toISOString();
   const inicioPrevio = inicioDeMes(mesAnterior(actual)).toISOString();
 
-  const eventos = await contarEventos();
-
   const datos = await withTenant(ctx, async (tx) => {
+    const eventos = await contarEventos(tx, opciones.mes ?? actual);
     const [t] = await tx
       .select({
         total: sql<number>`count(*)::int`,
@@ -77,7 +86,7 @@ export async function obtenerPanel(
       .orderBy(desc(junta.creadaEn))
       .limit(5);
 
-    return { t, recientes };
+    return { t, recientes, eventos };
   });
 
   const t = datos.t;
@@ -88,8 +97,8 @@ export async function obtenerPanel(
     juntasSinAdministrador: t?.sinAdmin ?? 0,
     nuevasEsteMes: t?.nuevasEsteMes ?? 0,
     nuevasMesAnterior: t?.nuevasMesAnterior ?? 0,
-    totalEventos: eventos.total,
-    eventosDelMes: eventos.delMes,
+    totalEventos: datos.eventos.total,
+    eventosDelMes: datos.eventos.delMes,
     recientes: datos.recientes,
   };
 }

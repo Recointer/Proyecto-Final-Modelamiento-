@@ -75,3 +75,8 @@ export function hoyEcuador(ahora: Date = new Date()): string {
 export function esFechaFutura(fecha: string, ahora: Date = new Date()): boolean {
   return fecha > hoyEcuador(ahora);
 }
+
+/** AAAA-MM-DD → DD/MM/AAAA para mostrar al usuario. */
+export function formatoFecha(fecha: string): string {
+  return fecha.split("-").reverse().join("/");
+}

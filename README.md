@@ -12,7 +12,7 @@ desarrollado con **Spec-Driven Development** usando [GitHub Spec Kit](https://gi
 | Módulo | Estado |
 |--------|--------|
 | **Gestión de Plataforma** (inicio de sesión, juntas, administrador, panel, configuración, cuentas) | Implementado |
-| Gestión Administrativa (socios, asistencia, predios, calendario) | Pendiente |
+| Gestión Administrativa (socios, asistencia, predios, calendario) | En curso: nómina de socios, eventos y asistencia implementados; predios con mapa, calendario y consulta del Socio pendientes |
 | Gestión Financiera (ingresos, egresos, multas, comprobantes, inventarios, reportes) | Pendiente |
 | Gestión de Comunicaciones (convocatorias, actas, mensajería) | Pendiente |
 

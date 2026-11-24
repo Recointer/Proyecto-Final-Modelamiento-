@@ -36,7 +36,8 @@ test.describe("panel del Super Administrador", () => {
     await expect(titulo).not.toHaveText(actual);
     await page.getByRole("link", { name: "Hoy" }).click();
     await expect(titulo).toHaveText(actual);
-    await expect(page.getByText("No hay eventos registrados en este mes.")).toBeVisible();
+    // el calendario se muestra con o sin eventos (según los datos de la base)
+    await expect(page.getByRole("table", { name: /Calendario de/ })).toBeVisible();
 
     // un parámetro de mes inválido no rompe la pantalla
     await page.goto("/panel?mes=no-valido");

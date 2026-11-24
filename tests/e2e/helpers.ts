@@ -112,3 +112,14 @@ export async function crearCuentaYEntrar(
   await expect(page).toHaveURL(/\/inicio/);
   return { password };
 }
+
+/** Como Secretario/a (sesión activa) registra un socio en la nómina. */
+export async function crearSocioUI(page: Page, o: { cedula: string; nombres: string; sector: string }) {
+  await page.goto("/socios/nuevo");
+  await page.getByLabel(/^Cédula/).fill(o.cedula);
+  await page.getByLabel(/Nombres completos/).fill(o.nombres);
+  await page.getByLabel(/Sector \/ zona asignada/).selectOption({ label: o.sector });
+  await page.getByLabel(/Fecha de ingreso/).fill("2020-01-01");
+  await page.getByRole("button", { name: "Guardar socio" }).click();
+  await expect(page.getByText("Socio registrado correctamente.")).toBeVisible();
+}

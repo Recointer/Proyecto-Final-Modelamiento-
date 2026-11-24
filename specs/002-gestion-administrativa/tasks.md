@@ -98,22 +98,22 @@ description: "Lista de tareas: Gestión Administrativa"
 
 ### Tests for User Story 2
 
-- [ ] T028 [P] [US2] Prueba unitaria del cálculo de quórum y contadores (`presentes / total de la lista`, lista vacía, quórum del 100 %) en `tests/unit/quorum.test.ts`
-- [ ] T029 [P] [US2] Prueba de integración de eventos y asistencia (`evento.tipo`, `evento.titulo`, `evento.fecha`, `evento.lugar`, anulación con `evento.motivo_anulacion`, `asistencia.estado`, `asistencia.motivo` obligatorio si es justificado, evento futuro y anulado rechazados, *upsert* en una transacción, lista con socios activos más quienes ya tienen fila, socios inactivos excluidos, auditoría, aislamiento) en `tests/integration/asistencia.test.ts`
-- [ ] T030 [P] [US2] Prueba de integración de `listarInasistenciasInjustificadas` (solo `ausente` en eventos activos, filtros de fechas y socio) y del panel de plataforma con las funciones agregadas (total y por día, sin títulos) en `tests/integration/eventos-panel.test.ts`
-- [ ] T031 [P] [US2] Prueba E2E de eventos y asistencia (crear evento, marcar todos, justificar con motivo, guardar, reabrir, anular y ver el total en el panel del Super Administrador) en `tests/e2e/asistencia.spec.ts`
+- [X] T028 [P] [US2] Prueba unitaria del cálculo de quórum y contadores (`presentes / total de la lista`, lista vacía, quórum del 100 %) en `tests/unit/quorum.test.ts`
+- [X] T029 [P] [US2] Prueba de integración de eventos y asistencia (`evento.tipo`, `evento.titulo`, `evento.fecha`, `evento.lugar`, anulación con `evento.motivo_anulacion`, `asistencia.estado`, `asistencia.motivo` obligatorio si es justificado, evento futuro y anulado rechazados, *upsert* en una transacción, lista con socios activos más quienes ya tienen fila, socios inactivos excluidos, auditoría, aislamiento) en `tests/integration/asistencia.test.ts`
+- [X] T030 [P] [US2] Prueba de integración de `listarInasistenciasInjustificadas` (solo `ausente` en eventos activos, filtros de fechas y socio) y del panel de plataforma con las funciones agregadas (total y por día, sin títulos) en `tests/integration/eventos-panel.test.ts`
+- [X] T031 [P] [US2] Prueba E2E de eventos y asistencia (crear evento, marcar todos, justificar con motivo, guardar, reabrir, anular y ver el total en el panel del Super Administrador) en `tests/e2e/asistencia.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T032 [P] [US2] Crear `src/lib/quorum.ts` con el cálculo puro de contadores y quórum frente al parámetro `quorumPorcentaje` de la junta
-- [ ] T033 [P] [US2] Crear `src/server/validation/evento.ts` y `src/server/validation/asistencia.ts` con los esquemas según `evento.tipo`, `evento.titulo`, `evento.fecha`, `evento.lugar`, `evento.estado`, `evento.motivo_anulacion`, `asistencia.estado` y `asistencia.motivo` de data-model.md
-- [ ] T034 [US2] Implementar `src/server/services/evento-service.ts`: `listarEventos`, `obtenerEvento`, `crearEvento`, `editarEvento`, `anularEvento` (irreversible, con motivo y actor), con auditoría (`evento.crear|editar|anular`)
-- [ ] T035 [US2] Implementar `src/server/services/asistencia-service.ts`: `obtenerListaAsistencia`, `guardarAsistencia` (una transacción, *upsert* por evento y socio, completa `evento.asistencia_registrada_en`, `registrado_*` y `modificado_*`) y `listarInasistenciasInjustificadas` (ver research.md §4 y §11)
-- [ ] T036 [US2] Reemplazar `contarEventos` en `src/server/services/panel-service.ts` por las funciones `total_eventos_plataforma()` y `eventos_plataforma_por_dia()` y mostrar «N eventos» por día en el calendario del panel `src/app/(platform)/panel/page.tsx`
-- [ ] T037 [US2] Implementar las Server Actions de eventos y asistencia en `src/app/(gestion)/eventos/actions.ts` (escritura solo `requireRole("secretario")`)
-- [ ] T038 [US2] Construir el listado y el alta de eventos en `src/app/(gestion)/eventos/page.tsx` y `src/app/(gestion)/eventos/nuevo/page.tsx` con `EventoForm.tsx`
-- [ ] T039 [US2] Construir el detalle de evento con anulación (diálogo de confirmación y motivo) en `src/app/(gestion)/eventos/[id]/page.tsx`
-- [ ] T040 [US2] Construir la toma de asistencia en `src/app/(gestion)/eventos/[id]/asistencia/page.tsx` con el componente de cliente `ListaAsistencia.tsx` (búsqueda, «Marcar todos», justificación con motivo, contadores y quórum al instante, guardado de toda la lista)
+- [X] T032 [P] [US2] Crear `src/lib/quorum.ts` con el cálculo puro de contadores y quórum frente al parámetro `quorumPorcentaje` de la junta
+- [X] T033 [P] [US2] Crear `src/server/validation/evento.ts` y `src/server/validation/asistencia.ts` con los esquemas según `evento.tipo`, `evento.titulo`, `evento.fecha`, `evento.lugar`, `evento.estado`, `evento.motivo_anulacion`, `asistencia.estado` y `asistencia.motivo` de data-model.md
+- [X] T034 [US2] Implementar `src/server/services/evento-service.ts`: `listarEventos`, `obtenerEvento`, `crearEvento`, `editarEvento`, `anularEvento` (irreversible, con motivo y actor), con auditoría (`evento.crear|editar|anular`)
+- [X] T035 [US2] Implementar `src/server/services/asistencia-service.ts`: `obtenerListaAsistencia`, `guardarAsistencia` (una transacción, *upsert* por evento y socio, completa `evento.asistencia_registrada_en`, `registrado_*` y `modificado_*`) y `listarInasistenciasInjustificadas` (ver research.md §4 y §11)
+- [X] T036 [US2] Reemplazar `contarEventos` en `src/server/services/panel-service.ts` por las funciones `total_eventos_plataforma()` y `eventos_plataforma_por_dia()` y mostrar «N eventos» por día en el calendario del panel `src/app/(platform)/panel/page.tsx`
+- [X] T037 [US2] Implementar las Server Actions de eventos y asistencia en `src/app/(gestion)/eventos/actions.ts` (escritura solo `requireRole("secretario")`)
+- [X] T038 [US2] Construir el listado y el alta de eventos en `src/app/(gestion)/eventos/page.tsx` y `src/app/(gestion)/eventos/nuevo/page.tsx` con `EventoForm.tsx`
+- [X] T039 [US2] Construir el detalle de evento con anulación (diálogo de confirmación y motivo) en `src/app/(gestion)/eventos/[id]/page.tsx`
+- [X] T040 [US2] Construir la toma de asistencia en `src/app/(gestion)/eventos/[id]/asistencia/page.tsx` con el componente de cliente `ListaAsistencia.tsx` (búsqueda, «Marcar todos», justificación con motivo, contadores y quórum al instante, guardado de toda la lista)
 
 **Checkpoint**: US1 y US2 funcionan de forma independiente; los datos de inasistencias ya están disponibles para Financiero
 

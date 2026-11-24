@@ -14,6 +14,7 @@ export function ConfirmarAccion({
   etiquetaConfirmar,
   campos,
   peligro = true,
+  entrada,
 }: {
   action: (formData: FormData) => void | Promise<void>;
   etiqueta: string;
@@ -22,9 +23,13 @@ export function ConfirmarAccion({
   etiquetaConfirmar: string;
   campos?: Record<string, string>;
   peligro?: boolean;
+  /** Campo de texto obligatorio dentro del diálogo (p. ej. el motivo de una anulación). */
+  entrada?: { nombre: string; etiqueta: string; minimo?: number; maximo?: number };
 }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const idTitulo = `dlg-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const idTitulo = `dlg-${uid}`;
+  const idEntrada = `ent-${uid}`;
   return (
     <>
       <button
@@ -45,6 +50,22 @@ export function ConfirmarAccion({
             {titulo}
           </h2>
           <div className="text-sm text-slate-700">{mensaje}</div>
+          {entrada ? (
+            <div className="space-y-1">
+              <label htmlFor={idEntrada} className="block text-sm font-semibold text-slate-800">
+                {entrada.etiqueta} <span aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id={idEntrada}
+                name={entrada.nombre}
+                required
+                minLength={entrada.minimo ?? 5}
+                maxLength={entrada.maximo ?? 500}
+                rows={3}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              />
+            </div>
+          ) : null}
           <div className="flex justify-end gap-2">
             <button
               type="button"
