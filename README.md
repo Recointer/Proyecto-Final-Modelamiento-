@@ -108,3 +108,13 @@ specs/            Especificaciones Spec Kit (spec, plan, modelo de datos, contra
 `/speckit-constitution` → `/speckit-specify` → `/speckit-clarify` → `/speckit-plan` → `/speckit-tasks` →
 `/speckit-implement`. La constitución del proyecto está en [`.specify/memory/constitution.md`](.specify/memory/constitution.md).
 Los mensajes de commit se escriben en español.
+
+## Despliegue
+
+Despliegue de producción con Docker (PostgreSQL + migraciones automáticas + aplicación, y HTTPS opcional):
+ver [docs/despliegue.md](docs/despliegue.md). Resumen:
+
+```powershell
+Copy-Item deploy/env.prod.example .env.prod   # complete las contraseñas
+docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+```

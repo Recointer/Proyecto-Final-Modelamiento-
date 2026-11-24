@@ -1,0 +1,73 @@
+# Despliegue de producción: PostgreSQL + migraciones + aplicación (+ HTTPS opcional con Caddy).
+# Uso: copie deploy/env.prod.example a .env.prod, complételo y ejecute
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+# Guía completa en docs/despliegue.md.
+name: multijunta
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}
+      POSTGRES_DB: multijunta
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d multijunta"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Aplica las migraciones y crea (o actualiza) el rol de la aplicación; termina y no se reinicia.
+  migrar:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
+        NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID: ${NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID:-}
+    image: multijunta-app
+    command: ["npm", "run", "db:migrate:prod"]
+    restart: "no"
+    environment: &entorno
+      DATABASE_ADMIN_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/multijunta
+      DATABASE_URL: postgres://app_multijunta:${APP_DB_PASSWORD:?Defina APP_DB_PASSWORD}@db:5432/multijunta
+      SMTP_URL: ${SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-no-responder@multijunta.local}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      FILE_STORE_DIR: /app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: multijunta-app
+    restart: unless-stopped
+    environment: *entorno
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      migrar:
+        condition: service_completed_successfully
+
+  # HTTPS automático (Let's Encrypt). Actívelo con: --profile https y defina DOMINIO.
+  caddy:
+    image: caddy:2
+    profiles: ["https"]
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${DOMINIO:-localhost} --to app:3000
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddydata:/data
+    depends_on:
+      - app
+
+volumes:
+  dbdata:
+  storage:
+  caddydata:

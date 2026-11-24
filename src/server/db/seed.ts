@@ -33,6 +33,8 @@ async function main() {
       console.log("Super Administrador creado");
     }
 
+    // en producción (SEED_SOLO_SUPERADMIN=1) no se crean las juntas de ejemplo
+    if (process.env.SEED_SOLO_SUPERADMIN === "1") return;
     await tx
       .insert(junta)
       .values([
