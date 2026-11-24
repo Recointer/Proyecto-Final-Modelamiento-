@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
+  // las pruebas E2E compilan en un directorio aparte para no pisar el servidor de desarrollo
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
   serverExternalPackages: ["@node-rs/argon2", "postgres"],
   // las actas pueden pesar hasta 5 MB (más el resto del formulario)

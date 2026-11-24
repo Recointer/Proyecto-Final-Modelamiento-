@@ -32,6 +32,7 @@ export function JuntaForm({
           Tipo de organización <span aria-hidden="true">*</span>
         </label>
         <select
+          key={v("tipo") || "riego"}
           id="campo-tipo"
           name="tipo"
           required

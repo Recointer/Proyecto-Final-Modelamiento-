@@ -1,5 +1,9 @@
 import {
   boolean,
+  date,
+  numeric,
+  smallint,
+  time,
   integer,
   jsonb,
   pgEnum,
@@ -124,3 +128,124 @@ export const auditLog = pgTable("audit_log", {
 export type Rol = (typeof rolUsuario.enumValues)[number];
 export type Usuario = typeof usuario.$inferSelect;
 export type Junta = typeof junta.$inferSelect;
+
+// ---------------------------------------------------------------------------------------------
+// Módulo de Gestión Administrativa (drizzle/0005_administrativo.sql)
+// Las claves foráneas compuestas (x_id, tenant_id) viven en la migración SQL.
+// ---------------------------------------------------------------------------------------------
+
+export const estadoSocio = pgEnum("estado_socio", ["activo", "inactivo"]);
+export const tipoEvento = pgEnum("tipo_evento", ["asamblea", "minga"]);
+export const estadoEvento = pgEnum("estado_evento", ["activo", "anulado"]);
+export const estadoAsistencia = pgEnum("estado_asistencia", ["presente", "ausente", "justificado"]);
+export const estadoPredio = pgEnum("estado_predio", ["activo", "inactivo"]);
+export const tipoServicio = pgEnum("tipo_servicio", [
+  "agua_riego",
+  "agua_potable",
+  "espacio_comunal",
+  "maquinaria",
+  "otro",
+]);
+export const estadoServicio = pgEnum("estado_servicio", ["activo", "inactivo"]);
+
+export const socio = pgTable("socio", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => junta.id),
+  cedula: text("cedula").notNull(),
+  nombres: text("nombres").notNull(),
+  sectorId: uuid("sector_id").notNull(),
+  telefono: text("telefono"),
+  correo: text("correo"),
+  estado: estadoSocio("estado").notNull().default("activo"),
+  /** Fecha de calendario (AAAA-MM-DD). */
+  fechaIngreso: date("fecha_ingreso", { mode: "string" }).notNull(),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  actualizadoEn: timestamp("actualizado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const evento = pgTable("evento", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => junta.id),
+  tipo: tipoEvento("tipo").notNull(),
+  titulo: text("titulo").notNull(),
+  fecha: date("fecha", { mode: "string" }).notNull(),
+  lugar: text("lugar").notNull(),
+  estado: estadoEvento("estado").notNull().default("activo"),
+  motivoAnulacion: text("motivo_anulacion"),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  asistenciaRegistradaEn: timestamp("asistencia_registrada_en", { withTimezone: true }),
+  creadoPor: uuid("creado_por")
+    .notNull()
+    .references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const asistencia = pgTable("asistencia", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => junta.id),
+  eventoId: uuid("evento_id").notNull(),
+  socioId: uuid("socio_id").notNull(),
+  estado: estadoAsistencia("estado").notNull(),
+  motivo: text("motivo"),
+  registradoPor: uuid("registrado_por")
+    .notNull()
+    .references(() => usuario.id),
+  registradoEn: timestamp("registrado_en", { withTimezone: true }).notNull().defaultNow(),
+  modificadoPor: uuid("modificado_por")
+    .notNull()
+    .references(() => usuario.id),
+  modificadoEn: timestamp("modificado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const predio = pgTable("predio", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => junta.id),
+  codigo: text("codigo").notNull(),
+  nombre: text("nombre").notNull(),
+  /** numeric llega como texto desde PostgreSQL. */
+  superficieHa: numeric("superficie_ha", { precision: 10, scale: 4 }).notNull(),
+  sectorId: uuid("sector_id").notNull(),
+  socioId: uuid("socio_id").notNull(),
+  latitud: numeric("latitud", { precision: 9, scale: 6 }),
+  longitud: numeric("longitud", { precision: 9, scale: 6 }),
+  imagenRuta: text("imagen_ruta"),
+  estado: estadoPredio("estado").notNull().default("activo"),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  actualizadoEn: timestamp("actualizado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const servicio = pgTable("servicio", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => junta.id),
+  nombre: text("nombre").notNull(),
+  tipo: tipoServicio("tipo").notNull(),
+  estado: estadoServicio("estado").notNull().default("activo"),
+});
+
+export const turno = pgTable("turno", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => junta.id),
+  servicioId: uuid("servicio_id").notNull(),
+  sectorId: uuid("sector_id").notNull(),
+  /** 1 = lunes … 7 = domingo */
+  diaSemana: smallint("dia_semana").notNull(),
+  horaInicio: time("hora_inicio").notNull(),
+  horaFin: time("hora_fin").notNull(),
+});
+
+export type Socio = typeof socio.$inferSelect;
+export type Evento = typeof evento.$inferSelect;
+export type Predio = typeof predio.$inferSelect;

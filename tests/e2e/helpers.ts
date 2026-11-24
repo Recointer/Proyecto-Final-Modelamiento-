@@ -55,3 +55,60 @@ export async function crearJuntaConAdmin(page: Page, sufijo: string) {
 
   return { slug, nombre: `Junta Prueba ${sufijo}` };
 }
+
+// ---------------------------------------------------------------------------------------------
+// Módulo administrativo
+// ---------------------------------------------------------------------------------------------
+
+/** Cédulas válidas de prueba para el personal y los socios (únicas por junta). */
+export const CEDULA_SECRETARIO = "1710000017";
+export const CEDULA_TESORERO = "1710000025";
+export const PASSWORD_PERSONAL = "ClavePersonal2026";
+
+/** Entra al sistema con identificador de junta, cédula y contraseña (cierra antes cualquier sesión). */
+export async function entrarComo(page: Page, slug: string, cedula: string, password: string) {
+  await page.context().clearCookies();
+  await page.goto("/login");
+  await page.getByLabel(/Identificador de junta/).fill(slug);
+  await page.getByLabel(/Correo electrónico o número de cédula/).fill(cedula);
+  await page.getByLabel(/^Contraseña/).fill(password);
+  await page.getByRole("button", { name: "Iniciar sesión" }).click();
+  // esperar a que termine el inicio de sesión antes de seguir navegando
+  await expect(page).not.toHaveURL(/\/login/);
+}
+
+/** Como Administrador de la Junta (sesión activa) crea un sector en /configuracion. */
+export async function crearSectorUI(page: Page, nombre: string) {
+  await page.goto("/configuracion");
+  await page.getByLabel(/Nombre del nuevo sector/).fill(nombre);
+  await page.getByRole("button", { name: "Agregar sector" }).click();
+  await expect(page.getByText("Sector agregado.")).toBeVisible();
+}
+
+/**
+ * Como Administrador de la Junta crea una cuenta con el rol indicado; luego esa persona ingresa con la
+ * credencial inicial y crea su contraseña. Al terminar queda con la sesión de ESA persona.
+ */
+export async function crearCuentaYEntrar(
+  page: Page,
+  slug: string,
+  o: { cedula: string; nombres: string; rol: "secretario" | "tesorero" | "socio"; sufijo: string; password?: string },
+) {
+  const password = o.password ?? PASSWORD_PERSONAL;
+  await page.goto("/usuarios/nuevo");
+  await page.getByLabel(/^Cédula/).fill(o.cedula);
+  await page.getByLabel(/Nombres completos/).fill(o.nombres);
+  await page.getByLabel(/Correo electrónico/).fill(`${o.rol}.${o.sufijo}@correo.com`);
+  await page.getByLabel(/^Rol/).selectOption(o.rol);
+  await page.getByRole("button", { name: "Crear cuenta" }).click();
+  await expect(page.getByText("Cuenta creada.")).toBeVisible();
+  const credencial = (await page.getByTestId("credencial").innerText()).trim();
+
+  await entrarComo(page, slug, o.cedula, credencial);
+  await expect(page).toHaveURL(/\/cambiar-password/);
+  await page.getByLabel(/^Nueva contraseña/).fill(password);
+  await page.getByLabel(/^Confirmar contraseña/).fill(password);
+  await page.getByRole("button", { name: "Guardar contraseña" }).click();
+  await expect(page).toHaveURL(/\/inicio/);
+  return { password };
+}

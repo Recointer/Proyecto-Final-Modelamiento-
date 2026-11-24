@@ -46,6 +46,7 @@ Copy-Item .env.example .env   # y ajuste las credenciales
    - `DATABASE_ADMIN_URL`: usuario con permisos para migrar (propietario del esquema).
    - `DATABASE_URL`: rol de la aplicación. La migración lo crea sin `BYPASSRLS`, no es propietario de las tablas.
    - `SESSION_SECRET`, `SMTP_URL`, `FILE_STORE_DIR`, `APP_URL`.
+   - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` y `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` (opcionales): mapa de predios; sin clave se muestra la lista con coordenadas.
    - `SEED_SUPERADMIN_CEDULA`, `SEED_SUPERADMIN_CORREO`, `SEED_SUPERADMIN_PASSWORD`: Super Administrador inicial (cédula válida y contraseña de 10+ caracteres con letras y números).
 3. **Migrar y sembrar:**
 
@@ -71,7 +72,7 @@ La guía de validación paso a paso está en [`specs/001-gestion-plataforma/quic
 |---------|-------------|
 | `npm test` | Pruebas unitarias |
 | `npm run test:integration` | Servicios contra PostgreSQL real, incluido el aislamiento RLS (usa `.env.test`) |
-| `npm run test:e2e` | Playwright: flujos de usuario y auditoría de accesibilidad WCAG 2.1 AA (requiere `npx playwright install chromium`) |
+| `npm run test:e2e` | Playwright: flujos de usuario y auditoría de accesibilidad WCAG 2.1 AA. Compila la app en `.next-e2e` y la prueba como **producción** en el puerto 3100 (requiere `npx playwright install chromium`; `E2E_SKIP_BUILD=1` reutiliza la compilación anterior) |
 | `npm run typecheck` · `npm run lint` | Tipos y estilo |
 | `npm run db:limpiar-e2e` | Borra de la base de desarrollo las juntas que dejan las pruebas E2E |
 

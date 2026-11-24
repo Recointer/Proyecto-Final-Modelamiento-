@@ -14,6 +14,8 @@ export function Campo(props: {
   ayuda?: string;
   error?: string;
   defaultValue?: string;
+  /** Para campos de fecha o número. */
+  max?: string;
 }) {
   // id único: varios formularios pueden compartir el nombre de campo en la misma página
   const id = `campo-${props.nombre}-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
@@ -31,6 +33,7 @@ export function Campo(props: {
         required={props.requerido}
         autoComplete={props.autoComplete}
         defaultValue={props.defaultValue}
+        max={props.max}
         aria-invalid={props.error ? true : undefined}
         aria-describedby={props.error ? `${id}-error` : props.ayuda ? `${id}-ayuda` : undefined}
         className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base shadow-sm focus:border-teal-700"

@@ -40,7 +40,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await admin.unsafe(
-    "TRUNCATE audit_log, token_recuperacion, sesion, designacion_administrador, sector, usuario, junta CASCADE",
+    "TRUNCATE asistencia, turno, predio, servicio, evento, socio, audit_log, token_recuperacion, sesion, designacion_administrador, sector, usuario, junta CASCADE",
   );
 });
 

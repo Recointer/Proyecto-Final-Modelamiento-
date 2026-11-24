@@ -13,3 +13,4 @@ test-results/
 playwright-report/
 .playwright/
 
+.next-e2e/

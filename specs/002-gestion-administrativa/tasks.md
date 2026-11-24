@@ -33,10 +33,10 @@ description: "Lista de tareas: Gestión Administrativa"
 
 **Purpose**: Preparar dependencias y configuración
 
-- [ ] T001 Instalar la dependencia `pdf-lib` en `package.json` (PDF en servidor, ver research.md §10)
-- [ ] T002 [P] Documentar `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` y `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` (opcionales, la clave debe restringirse por referente HTTP) en `.env.example` y en la sección de variables del `README.md`
-- [ ] T003 [P] Ampliar `tests/integration/setup.ts` para que el `TRUNCATE` incluya `asistencia, turno, predio, servicio, evento, socio` antes de las tablas existentes
-- [ ] T004 [P] Ampliar `src/server/db/limpiar-e2e.ts` para borrar, en orden de dependencias, `asistencia`, `turno`, `predio`, `servicio`, `evento` y `socio` de las juntas de prueba antes de `sector` y `junta`, y eliminar sus imágenes del `FileStore`
+- [X] T001 Instalar la dependencia `pdf-lib` en `package.json` (PDF en servidor, ver research.md §10)
+- [X] T002 [P] Documentar `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` y `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` (opcionales, la clave debe restringirse por referente HTTP) en `.env.example` y en la sección de variables del `README.md`
+- [X] T003 [P] Ampliar `tests/integration/setup.ts` para que el `TRUNCATE` incluya `asistencia, turno, predio, servicio, evento, socio` antes de las tablas existentes
+- [X] T004 [P] Ampliar `src/server/db/limpiar-e2e.ts` para borrar, en orden de dependencias, `asistencia`, `turno`, `predio`, `servicio`, `evento` y `socio` de las juntas de prueba antes de `sector` y `junta`, y eliminar sus imágenes del `FileStore`
 
 ---
 
@@ -46,20 +46,20 @@ description: "Lista de tareas: Gestión Administrativa"
 
 **⚠️ CRÍTICO**: ninguna historia puede empezar hasta terminar esta fase
 
-- [ ] T005 Crear `drizzle/0005_administrativo.sql` con los enums y las tablas `socio`, `evento`, `asistencia`, `predio`, `servicio` y `turno` respetando enums, nulabilidad, longitudes, `CHECK` y unicidades de [data-model.md](data-model.md): `socio.cedula`, `socio.nombres`, `socio.sector_id`, `socio.telefono`, `socio.correo`, `socio.estado`, `socio.fecha_ingreso`, `evento.tipo`, `evento.titulo`, `evento.fecha`, `evento.lugar`, `evento.estado`, `evento.motivo_anulacion`, `asistencia.estado`, `asistencia.motivo`, `predio.codigo`, `predio.nombre`, `predio.superficie_ha`, `predio.latitud`, `predio.longitud`, `predio.imagen_ruta`, `predio.estado`, `servicio.nombre`, `servicio.tipo`, `servicio.estado`, `turno.dia_semana`, `turno.hora_inicio`, `turno.hora_fin`
-- [ ] T006 En `drizzle/0005_administrativo.sql` añadir `UNIQUE (id, tenant_id)` a `sector`, las claves foráneas compuestas `(x_id, tenant_id)` (`asistencia.evento_id`, `asistencia.socio_id` y `turno.servicio_id`; y con `ON DELETE RESTRICT` `socio.sector_id`, `predio.sector_id`, `predio.socio_id` y `turno.sector_id`), la extensión `btree_gist`, la restricción de exclusión de `turno` sobre `turno.dia_semana`, `turno.hora_inicio` y `turno.hora_fin`, y los índices de la sección «Índices» de data-model.md
-- [ ] T007 Crear `drizzle/0006_administrativo_rls.sql` con `ENABLE` y `FORCE ROW LEVEL SECURITY` y la política de aislamiento `app_role() = 'tenant' AND tenant_id = app_tenant()` para las seis tablas nuevas (sin acceso del `super_admin` ni de `auth`)
-- [ ] T008 Crear `drizzle/0007_funciones_eventos.sql` con las funciones `SECURITY DEFINER` `total_eventos_plataforma()` y `eventos_plataforma_por_dia(anio, mes)` (solo `super_admin`, `search_path` fijo, hora de Ecuador, solo eventos con `evento.estado` activo, solo cifras)
-- [ ] T009 Actualizar `src/server/db/migrate.ts` con los privilegios de [data-model.md](data-model.md) («Privilegios del rol de la aplicación»): `SELECT, INSERT, UPDATE` sobre `socio`, `evento`, `asistencia`, `predio` y `servicio` (sin `DELETE`), `SELECT, INSERT, UPDATE, DELETE` sobre `turno`, y `EXECUTE` sobre las dos funciones nuevas; aplicar las migraciones al esquema de desarrollo
-- [ ] T010 Añadir las tablas nuevas a `src/server/db/schema.ts` (Drizzle) alineadas con `drizzle/0005_administrativo.sql` y exportar sus tipos
-- [ ] T011 Ampliar la sesión con la cédula del usuario: `cedula` en `UsuarioSesion` y en la consulta de `validarToken` en `src/server/auth/session.ts` (ver research.md §1)
-- [ ] T012 Crear `src/server/services/socio-sesion.ts` con `socioDeSesion(ctx, user)`: busca el `socio` con `tenant_id` y `cedula` iguales a los del usuario y devuelve `null` si no figura en el padrón (el socio nunca llega desde el cliente, ver research.md §2)
-- [ ] T013 [P] Añadir a `src/lib/result.ts` los mensajes de error del módulo: `SOCIO_NO_ENCONTRADO`, `FECHA_FUTURA`, `EVENTO_NO_ENCONTRADO`, `EVENTO_ANULADO`, `EVENTO_FUTURO`, `SOCIO_NO_PERMITIDO`, `PREDIO_NO_ENCONTRADO`, `CODIGO_DUPLICADO`, `COORDENADAS_INVALIDAS`, `IMAGEN_INVALIDA`, `SERVICIO_NO_ENCONTRADO`, `SERVICIO_DUPLICADO`, `TURNO_NO_ENCONTRADO`, `TURNO_HORARIO_INVALIDO`, `TURNO_SOLAPADO`, `NO_EN_PADRON`
-- [ ] T014 [P] Ampliar `src/server/files/file-store.ts`: subcarpetas anidadas validadas por segmento (`predios/<tenant_id>`), parámetro de tipos permitidos (solo PNG y JPEG para predios) y método `eliminar`; pruebas unitarias en `tests/unit/file-store.test.ts` (ruta fuera de la base, tipo no permitido, eliminar inexistente)
-- [ ] T015 [P] Crear `src/lib/navegacion.ts` con `navegacionPara(rol)` (Secretario/a, Administrador, Tesorero/a y Socio con sus enlaces) y usarla en `src/app/(junta)/layout.tsx` y `src/app/(miembro)/inicio/page.tsx`
-- [ ] T016 Crear `src/app/(gestion)/layout.tsx` que exige sesión de `secretario`, `admin_junta` o `tesorero` con `exigirSesion` y muestra el `AppShell` con la navegación de T015; añadir `contextoGestion(roles)` en `src/server/auth/page-guard.ts` que devuelve el contexto de tenant y el rol (redirige si no corresponde)
-- [ ] T017 [P] Ampliar `tests/integration/helpers.ts` con ayudantes directos para crear `socio`, `evento`, `predio`, `servicio` y `turno` en una junta (conexión administradora)
-- [ ] T018 Prueba de integración de aislamiento y restricciones en `tests/integration/rls-administrativo.test.ts`: un contexto de la junta A no ve ni modifica filas de B en las seis tablas; el `super_admin` y `auth` no ven nada; una clave foránea compuesta cruzada entre juntas falla; el rol de la aplicación no puede hacer `DELETE` en `socio`, `evento`, `asistencia`, `predio` ni `servicio` pero sí en `turno`; las funciones agregadas devuelven solo cifras y solo funcionan para `super_admin`
+- [X] T005 Crear `drizzle/0005_administrativo.sql` con los enums y las tablas `socio`, `evento`, `asistencia`, `predio`, `servicio` y `turno` respetando enums, nulabilidad, longitudes, `CHECK` y unicidades de [data-model.md](data-model.md): `socio.cedula`, `socio.nombres`, `socio.sector_id`, `socio.telefono`, `socio.correo`, `socio.estado`, `socio.fecha_ingreso`, `evento.tipo`, `evento.titulo`, `evento.fecha`, `evento.lugar`, `evento.estado`, `evento.motivo_anulacion`, `asistencia.estado`, `asistencia.motivo`, `predio.codigo`, `predio.nombre`, `predio.superficie_ha`, `predio.latitud`, `predio.longitud`, `predio.imagen_ruta`, `predio.estado`, `servicio.nombre`, `servicio.tipo`, `servicio.estado`, `turno.dia_semana`, `turno.hora_inicio`, `turno.hora_fin`
+- [X] T006 En `drizzle/0005_administrativo.sql` añadir `UNIQUE (id, tenant_id)` a `sector`, las claves foráneas compuestas `(x_id, tenant_id)` (`asistencia.evento_id`, `asistencia.socio_id` y `turno.servicio_id`; y con `ON DELETE RESTRICT` `socio.sector_id`, `predio.sector_id`, `predio.socio_id` y `turno.sector_id`), la extensión `btree_gist`, la restricción de exclusión de `turno` sobre `turno.dia_semana`, `turno.hora_inicio` y `turno.hora_fin`, y los índices de la sección «Índices» de data-model.md
+- [X] T007 Crear `drizzle/0006_administrativo_rls.sql` con `ENABLE` y `FORCE ROW LEVEL SECURITY` y la política de aislamiento `app_role() = 'tenant' AND tenant_id = app_tenant()` para las seis tablas nuevas (sin acceso del `super_admin` ni de `auth`)
+- [X] T008 Crear `drizzle/0007_funciones_eventos.sql` con las funciones `SECURITY DEFINER` `total_eventos_plataforma()` y `eventos_plataforma_por_dia(anio, mes)` (solo `super_admin`, `search_path` fijo, hora de Ecuador, solo eventos con `evento.estado` activo, solo cifras)
+- [X] T009 Actualizar `src/server/db/migrate.ts` con los privilegios de [data-model.md](data-model.md) («Privilegios del rol de la aplicación»): `SELECT, INSERT, UPDATE` sobre `socio`, `evento`, `asistencia`, `predio` y `servicio` (sin `DELETE`), `SELECT, INSERT, UPDATE, DELETE` sobre `turno`, y `EXECUTE` sobre las dos funciones nuevas; aplicar las migraciones al esquema de desarrollo
+- [X] T010 Añadir las tablas nuevas a `src/server/db/schema.ts` (Drizzle) alineadas con `drizzle/0005_administrativo.sql` y exportar sus tipos
+- [X] T011 Ampliar la sesión con la cédula del usuario: `cedula` en `UsuarioSesion` y en la consulta de `validarToken` en `src/server/auth/session.ts` (ver research.md §1)
+- [X] T012 Crear `src/server/services/socio-sesion.ts` con `socioDeSesion(ctx, user)`: busca el `socio` con `tenant_id` y `cedula` iguales a los del usuario y devuelve `null` si no figura en el padrón (el socio nunca llega desde el cliente, ver research.md §2)
+- [X] T013 [P] Añadir a `src/lib/result.ts` los mensajes de error del módulo: `SOCIO_NO_ENCONTRADO`, `FECHA_FUTURA`, `EVENTO_NO_ENCONTRADO`, `EVENTO_ANULADO`, `EVENTO_FUTURO`, `SOCIO_NO_PERMITIDO`, `PREDIO_NO_ENCONTRADO`, `CODIGO_DUPLICADO`, `COORDENADAS_INVALIDAS`, `IMAGEN_INVALIDA`, `SERVICIO_NO_ENCONTRADO`, `SERVICIO_DUPLICADO`, `TURNO_NO_ENCONTRADO`, `TURNO_HORARIO_INVALIDO`, `TURNO_SOLAPADO`, `NO_EN_PADRON`
+- [X] T014 [P] Ampliar `src/server/files/file-store.ts`: subcarpetas anidadas validadas por segmento (`predios/<tenant_id>`), parámetro de tipos permitidos (solo PNG y JPEG para predios) y método `eliminar`; pruebas unitarias en `tests/unit/file-store.test.ts` (ruta fuera de la base, tipo no permitido, eliminar inexistente)
+- [X] T015 [P] Crear `src/lib/navegacion.ts` con `navegacionPara(rol)` (Secretario/a, Administrador, Tesorero/a y Socio con sus enlaces) y usarla en `src/app/(junta)/layout.tsx` y `src/app/(miembro)/inicio/page.tsx`
+- [X] T016 Crear `src/app/(gestion)/layout.tsx` que exige sesión de `secretario`, `admin_junta` o `tesorero` con `exigirSesion` y muestra el `AppShell` con la navegación de T015; añadir `contextoGestion(roles)` en `src/server/auth/page-guard.ts` que devuelve el contexto de tenant y el rol (redirige si no corresponde)
+- [X] T017 [P] Ampliar `tests/integration/helpers.ts` con ayudantes directos para crear `socio`, `evento`, `predio`, `servicio` y `turno` en una junta (conexión administradora)
+- [X] T018 Prueba de integración de aislamiento y restricciones en `tests/integration/rls-administrativo.test.ts`: un contexto de la junta A no ve ni modifica filas de B en las seis tablas; el `super_admin` y `auth` no ven nada; una clave foránea compuesta cruzada entre juntas falla; el rol de la aplicación no puede hacer `DELETE` en `socio`, `evento`, `asistencia`, `predio` ni `servicio` pero sí en `turno`; las funciones agregadas devuelven solo cifras y solo funcionan para `super_admin`
 
 **Checkpoint**: base lista; las historias pueden comenzar
 
@@ -73,18 +73,18 @@ description: "Lista de tareas: Gestión Administrativa"
 
 ### Tests for User Story 1
 
-- [ ] T019 [P] [US1] Prueba unitaria de validación de socios (cédula normalizada y validada, nombres, teléfono, correo, fecha de ingreso no futura) en `tests/unit/socio.test.ts`
-- [ ] T020 [P] [US1] Prueba de integración de `socio-service` (crear, duplicado de `socio.cedula` y `socio.correo`, editar sin cambiar la cédula, baja y reactivación, filtros por `socio.sector_id` y `socio.estado`, paginación, búsqueda con comodines literales, auditoría, aislamiento entre juntas, 1.000 socios en menos de 2 s) en `tests/integration/socios.test.ts`
-- [ ] T021 [P] [US1] Prueba E2E de la nómina (alta, validaciones, búsqueda, edición, baja y un Tesorero/a que solo consulta) en `tests/e2e/socios.spec.ts`
+- [X] T019 [P] [US1] Prueba unitaria de validación de socios (cédula normalizada y validada, nombres, teléfono, correo, fecha de ingreso no futura) en `tests/unit/socio.test.ts`
+- [X] T020 [P] [US1] Prueba de integración de `socio-service` (crear, duplicado de `socio.cedula` y `socio.correo`, editar sin cambiar la cédula, baja y reactivación, filtros por `socio.sector_id` y `socio.estado`, paginación, búsqueda con comodines literales, auditoría, aislamiento entre juntas, 1.000 socios en menos de 2 s) en `tests/integration/socios.test.ts`
+- [X] T021 [P] [US1] Prueba E2E de la nómina (alta, validaciones, búsqueda, edición, baja y un Tesorero/a que solo consulta) en `tests/e2e/socios.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T022 [P] [US1] Crear `src/server/validation/socio.ts` con los esquemas Zod de alta, edición y filtros según `socio.cedula`, `socio.nombres`, `socio.sector_id`, `socio.telefono`, `socio.correo`, `socio.estado` y `socio.fecha_ingreso` de data-model.md
-- [ ] T023 [P] [US1] Añadir `listarSectores(ctx)` a `src/server/services/configuracion-service.ts` para poblar los selectores de sector de todo el módulo
-- [ ] T024 [US1] Implementar `src/server/services/socio-service.ts`: `listarSocios`, `obtenerSocio`, `crearSocio`, `editarSocio`, `desactivarSocio`, `reactivarSocio` con unicidad por junta (violaciones 23505 a `CEDULA_DUPLICADA` y `CORREO_DUPLICADO`), `fecha_ingreso` en hora de Ecuador y auditoría (`socio.crear|editar|desactivar|reactivar`)
-- [ ] T025 [US1] Implementar las Server Actions de socios en `src/app/(gestion)/socios/actions.ts` (escritura solo `requireRole("secretario")`)
-- [ ] T026 [US1] Construir el listado de la nómina con búsqueda, filtros y paginación en `src/app/(gestion)/socios/page.tsx` (el Administrador y el Tesorero/a no ven acciones de escritura)
-- [ ] T027 [P] [US1] Construir `src/app/(gestion)/socios/SocioForm.tsx`, `nuevo/page.tsx` y `[id]/page.tsx` (ficha, edición, baja y reactivación con confirmación; la cédula se muestra sin poder editarse)
+- [X] T022 [P] [US1] Crear `src/server/validation/socio.ts` con los esquemas Zod de alta, edición y filtros según `socio.cedula`, `socio.nombres`, `socio.sector_id`, `socio.telefono`, `socio.correo`, `socio.estado` y `socio.fecha_ingreso` de data-model.md
+- [X] T023 [P] [US1] Añadir `listarSectores(ctx)` a `src/server/services/configuracion-service.ts` para poblar los selectores de sector de todo el módulo
+- [X] T024 [US1] Implementar `src/server/services/socio-service.ts`: `listarSocios`, `obtenerSocio`, `crearSocio`, `editarSocio`, `desactivarSocio`, `reactivarSocio` con unicidad por junta (violaciones 23505 a `CEDULA_DUPLICADA` y `CORREO_DUPLICADO`), `fecha_ingreso` en hora de Ecuador y auditoría (`socio.crear|editar|desactivar|reactivar`)
+- [X] T025 [US1] Implementar las Server Actions de socios en `src/app/(gestion)/socios/actions.ts` (escritura solo `requireRole("secretario")`)
+- [X] T026 [US1] Construir el listado de la nómina con búsqueda, filtros y paginación en `src/app/(gestion)/socios/page.tsx` (el Administrador y el Tesorero/a no ven acciones de escritura)
+- [X] T027 [P] [US1] Construir `src/app/(gestion)/socios/SocioForm.tsx`, `nuevo/page.tsx` y `[id]/page.tsx` (ficha, edición, baja y reactivación con confirmación; la cédula se muestra sin poder editarse)
 
 **Checkpoint**: US1 funcional y comprobable por sí sola (MVP)
 

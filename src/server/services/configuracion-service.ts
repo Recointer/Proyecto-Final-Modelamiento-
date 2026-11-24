@@ -207,7 +207,20 @@ export async function eliminarSector(ctx: CtxTenant, id: string): Promise<void> 
       });
     });
   } catch (err) {
-    if (codigoPg(err).codigo === "23503") throw new AppError("SECTOR_CON_ASOCIADOS");
+    // 23001 = ON DELETE RESTRICT (tablas del módulo administrativo); 23503 = NO ACTION (otras tablas)
+    const { codigo } = codigoPg(err);
+    if (codigo === "23503" || codigo === "23001") throw new AppError("SECTOR_CON_ASOCIADOS");
     throw err;
   }
+}
+
+/** Sectores de la junta ordenados por nombre (para los selectores del módulo administrativo). */
+export async function listarSectores(ctx: CtxTenant): Promise<Sector[]> {
+  return withTenant(ctx, (tx) =>
+    tx
+      .select({ id: sector.id, nombre: sector.nombre, descripcion: sector.descripcion })
+      .from(sector)
+      .where(eq(sector.tenantId, ctx.tenantId))
+      .orderBy(asc(sql`lower(${sector.nombre})`)),
+  );
 }

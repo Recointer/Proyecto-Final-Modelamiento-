@@ -23,6 +23,7 @@ export function ConfiguracionForm({ inicial }: { inicial: Record<string, string>
           Tipo de organización <span aria-hidden="true">*</span>
         </label>
         <select
+          key={v("tipo")}
           id="campo-tipo"
           name="tipo"
           defaultValue={v("tipo")}

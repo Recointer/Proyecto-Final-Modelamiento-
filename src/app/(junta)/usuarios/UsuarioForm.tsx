@@ -82,6 +82,7 @@ export function UsuarioForm({
           </>
         ) : (
           <select
+            key={v("rol")}
             id="usuario-rol"
             name="rol"
             defaultValue={v("rol") || "socio"}

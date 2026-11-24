@@ -29,3 +29,11 @@ export async function contextoAdminJunta(): Promise<Extract<DbContext, { role: "
   if (ctx.role !== "tenant") redirect(destinoPorRol(user.rol));
   return ctx;
 }
+
+/** Contexto de tenant y usuario para las pantallas de operación del módulo administrativo. */
+export async function contextoGestion(roles: Rol[]): Promise<{ ctx: Extract<DbContext, { role: "tenant" }>; user: UsuarioSesion }> {
+  const user = await exigirSesion(roles);
+  const ctx = contextoDe(user);
+  if (ctx.role !== "tenant") redirect(destinoPorRol(user.rol));
+  return { ctx, user };
+}

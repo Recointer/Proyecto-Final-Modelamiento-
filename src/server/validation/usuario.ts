@@ -15,14 +15,14 @@ export const ETIQUETA_ROL: Record<string, string> = {
 
 const vacioAUndefined = (v: string | undefined) => (v && v.trim() ? v.trim() : undefined);
 
-const correoOpcional = z
+export const correoOpcional = z
   .string()
   .max(160)
   .optional()
   .transform(vacioAUndefined)
   .pipe(z.string().toLowerCase().email("Correo no válido").optional());
 
-const telefonoOpcional = z
+export const telefonoOpcional = z
   .string()
   .max(30)
   .optional()

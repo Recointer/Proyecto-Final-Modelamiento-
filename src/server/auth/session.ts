@@ -10,6 +10,7 @@ const DIAS_RECORDAR = 30;
 
 export interface UsuarioSesion {
   userId: string;
+  cedula: string;
   nombres: string;
   rol: Rol;
   tenantId: string | null;
@@ -62,6 +63,7 @@ export async function validarToken(token: string): Promise<UsuarioSesion | null>
     const filas = await tx
       .select({
         userId: usuario.id,
+        cedula: usuario.cedula,
         nombres: usuario.nombres,
         rol: usuario.rol,
         tenantId: usuario.tenantId,
@@ -80,6 +82,7 @@ export async function validarToken(token: string): Promise<UsuarioSesion | null>
     if (f.tenantId && f.juntaEstado !== "activa") return null;
     return {
       userId: f.userId,
+      cedula: f.cedula,
       nombres: f.nombres,
       rol: f.rol,
       tenantId: f.tenantId,

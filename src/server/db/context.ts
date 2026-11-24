@@ -11,24 +11,25 @@ export type DbContext =
 
 export type Db = PostgresJsDatabase<typeof schema>;
 
-let client: postgres.Sql | undefined;
-let db: Db | undefined;
+// El cliente se guarda en globalThis: en desarrollo la recarga en caliente reevalúa este módulo y,
+// sin esto, cada recarga abriría un pool nuevo sin cerrar el anterior (fuga de conexiones).
+const g = globalThis as unknown as { __multijuntaClient?: postgres.Sql; __multijuntaDb?: Db };
 
 function getDb(): Db {
-  if (!db) {
+  if (!g.__multijuntaDb) {
     const url = process.env.DATABASE_URL;
     if (!url) throw new Error("Falta DATABASE_URL");
-    client = postgres(url, { max: 10, onnotice: () => {} });
-    db = drizzle(client, { schema });
+    g.__multijuntaClient = postgres(url, { max: 10, onnotice: () => {} });
+    g.__multijuntaDb = drizzle(g.__multijuntaClient, { schema });
   }
-  return db;
+  return g.__multijuntaDb;
 }
 
 /** Cierra el pool (pruebas y scripts). */
 export async function closeDb(): Promise<void> {
-  if (client) await client.end();
-  client = undefined;
-  db = undefined;
+  if (g.__multijuntaClient) await g.__multijuntaClient.end();
+  g.__multijuntaClient = undefined;
+  g.__multijuntaDb = undefined;
 }
 
 /**

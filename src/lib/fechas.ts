@@ -63,3 +63,15 @@ export function parseMes(valor: string | undefined): MesCalendario | null {
 export function formatoMes({ anio, mes }: MesCalendario): string {
   return `${anio}-${String(mes).padStart(2, "0")}`;
 }
+
+/** Fecha de calendario de hoy en Ecuador, como AAAA-MM-DD. */
+export function hoyEcuador(ahora: Date = new Date()): string {
+  const { anio, mes } = mesDe(ahora);
+  const dia = new Date(ahora.getTime() + OFFSET_MS).getUTCDate();
+  return `${anio}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
+}
+
+/** true si la fecha AAAA-MM-DD es posterior a hoy (hora de Ecuador). */
+export function esFechaFutura(fecha: string, ahora: Date = new Date()): boolean {
+  return fecha > hoyEcuador(ahora);
+}
