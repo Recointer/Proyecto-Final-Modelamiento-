@@ -261,6 +261,78 @@ test.describe("accesibilidad y vista móvil", () => {
     await expect(page, "Título de /mi/estado-de-cuenta").toHaveTitle(/^Mi estado de cuenta/);
     await auditar(page, "mi estado de cuenta");
   });
+
+  test("pantallas del módulo de comunicaciones (Secretario/a, Administrador y Socio)", async ({ page }) => {
+    test.setTimeout(480_000);
+    const sufijo = Date.now().toString(36);
+    const { slug } = await crearJuntaConAdmin(page, sufijo);
+    await crearSectorUI(page, "Norte");
+    await crearCuentaYEntrar(page, slug, { cedula: CEDULA_SECRETARIO, nombres: "Rosa Secretaria", rol: "secretario", sufijo });
+    await crearSocioUI(page, { cedula: "1710000033", nombres: "Ana Torres", sector: "Norte" });
+
+    await page.goto("/convocatorias");
+    await page.locator("summary", { hasText: "Emitir convocatoria" }).click();
+    await page.locator("details").getByLabel(/^Tipo/).selectOption({ label: "Asamblea general" });
+    await page.locator("details").getByLabel(/^Título/).fill("Asamblea general");
+    await page.locator("details").getByLabel(/^Fecha/).fill("2030-01-15");
+    await page.locator("details").getByLabel(/^Hora/).fill("18:00");
+    await page.locator("details").getByLabel(/^Lugar/).fill("Casa comunal");
+    await page.getByRole("button", { name: "Emitir convocatoria" }).click();
+    await expect(page.getByText("Convocatoria emitida.")).toBeVisible();
+
+    await page.goto("/documentos");
+    await page.locator("summary", { hasText: "Archivar documento" }).click();
+    await page.locator("details").getByLabel(/^Tipo de documento/).selectOption({ label: "Acta de asamblea" });
+    await page.locator("details").getByLabel(/^Título/).fill("Acta de marzo");
+    await page.locator("details").getByLabel(/^Archivo/).setInputFiles({ name: "acta.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4\n") });
+    await page.locator("details").getByLabel(/^Publicar para los socios/).check();
+    await page.getByRole("button", { name: "Archivar documento" }).click();
+    await expect(page.getByText("Documento archivado y publicado.")).toBeVisible();
+
+    await page.goto("/comunicaciones");
+    await page.locator("summary", { hasText: "Registrar comunicación" }).click();
+    await page.locator("details").getByLabel(/^Institución/).fill("GAD Parroquial");
+    await page.locator("details").getByLabel(/^Asunto/).fill("Reunión técnica");
+    await page.locator("details").getByLabel(/^Resumen/).fill("Invitan a una reunión.");
+    await page.locator("details").getByLabel(/^Publicar como comunicado/).check();
+    await page.getByRole("button", { name: "Registrar comunicación" }).click();
+    await expect(page.getByText("Comunicación registrada.")).toBeVisible();
+
+    for (const [ruta, titulo, nombre] of [
+      ["/convocatorias", "Convocatorias", "convocatorias (Secretario/a)"],
+      ["/documentos", "Actas y resoluciones", "documentos (Secretario/a)"],
+      ["/comunicaciones", "Comunicaciones recibidas", "comunicaciones recibidas"],
+    ] as const) {
+      await page.goto(ruta);
+      await expect(page, `Título de ${ruta}`).toHaveTitle(new RegExp(`^${titulo}`));
+      await auditar(page, nombre);
+    }
+
+    // el Socio escribe y el Administrador revisa su bandeja
+    await entrarComo(page, slug, CEDULA_ADMIN, PASSWORD_ADMIN);
+    await crearCuentaYEntrar(page, slug, { cedula: "1710000033", nombres: "Ana Torres", rol: "socio", sufijo });
+    await page.goto("/mensajes");
+    await page.getByLabel(/^Asunto/).fill("Consulta");
+    await page.getByLabel(/^Mensaje/).fill("Hola, tengo una consulta.");
+    await page.getByRole("button", { name: "Enviar mensaje" }).click();
+    await expect(page.getByText("Mensaje enviado.")).toBeVisible();
+    await auditar(page, "conversación (Socio)");
+    for (const [ruta, titulo, nombre] of [
+      ["/convocatorias", "Convocatorias", "convocatorias (Socio)"],
+      ["/documentos", "Actas y resoluciones", "documentos (Socio)"],
+      ["/comunicaciones", "Comunicaciones recibidas", "comunicados (Socio)"],
+      ["/mensajes", "Mensajes", "bandeja de mensajes (Socio)"],
+    ] as const) {
+      await page.goto(ruta);
+      await expect(page, `Título de ${ruta}`).toHaveTitle(new RegExp(`^${titulo}`));
+      await auditar(page, nombre);
+    }
+
+    await entrarComo(page, slug, CEDULA_ADMIN, PASSWORD_ADMIN);
+    await page.goto("/mensajes");
+    await expect(page.getByRole("table", { name: "Conversaciones" })).toBeVisible();
+    await auditar(page, "bandeja de mensajes (Administrador)");
+  });
 });
 
 test.describe("navegación accesible", () => {

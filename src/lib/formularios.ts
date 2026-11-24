@@ -9,7 +9,7 @@ export interface EstadoFormulario {
 export interface CampoFormulario {
   nombre: string;
   etiqueta: string;
-  tipo?: "text" | "date" | "number" | "select" | "textarea" | "file";
+  tipo?: "text" | "date" | "time" | "number" | "select" | "textarea" | "file" | "checkbox";
   requerido?: boolean;
   ayuda?: string;
   placeholder?: string;

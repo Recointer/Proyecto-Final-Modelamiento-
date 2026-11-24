@@ -24,6 +24,11 @@ export const MODULOS_DISPONIBLES = new Set<string>([
   "inventario",
   "activos",
   "mi-estado-cuenta",
+  "convocatorias",
+  "documentos",
+  "comunicaciones",
+  "mensajes",
+  "comunicados",
 ]);
 
 interface Entrada extends ItemNav {
@@ -50,6 +55,11 @@ const ENTRADAS: readonly Entrada[] = [
   { modulo: "reportes", href: "/finanzas/reportes", etiqueta: "Reportes", roles: ["tesorero", "admin_junta"] },
   { modulo: "inventario", href: "/finanzas/inventario", etiqueta: "Inventario", roles: ["tesorero"] },
   { modulo: "activos", href: "/finanzas/activos", etiqueta: "Activos fijos", roles: ["tesorero"] },
+  { modulo: "convocatorias", href: "/convocatorias", etiqueta: "Convocatorias", roles: [...PERSONAL, "socio"] },
+  { modulo: "documentos", href: "/documentos", etiqueta: "Actas y resoluciones", roles: [...PERSONAL, "socio"] },
+  { modulo: "comunicaciones", href: "/comunicaciones", etiqueta: "Comunicaciones recibidas", roles: PERSONAL },
+  { modulo: "comunicados", href: "/comunicaciones", etiqueta: "Comunicados", roles: ["socio"] },
+  { modulo: "mensajes", href: "/mensajes", etiqueta: "Mensajes", roles: ["admin_junta", "socio"] },
   { modulo: "mi-informacion", href: "/mi/informacion", etiqueta: "Mi información", roles: ["socio"] },
   { modulo: "mi-asistencia", href: "/mi/asistencia", etiqueta: "Mi asistencia", roles: ["socio"] },
   { modulo: "mi-estado-cuenta", href: "/mi/estado-de-cuenta", etiqueta: "Mi estado de cuenta", roles: ["socio"] },

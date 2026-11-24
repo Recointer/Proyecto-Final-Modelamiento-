@@ -381,3 +381,85 @@ export const cargoSaldo = pgView("cargo_saldo", {
   estado: text("estado").notNull(),
   vencido: boolean("vencido").notNull(),
 }).existing();
+
+// ---------------------------------------------------------------------------------------------
+// Módulo de Gestión de Comunicaciones (drizzle/0010_comunicaciones.sql)
+// ---------------------------------------------------------------------------------------------
+
+export const tipoDocumento = pgEnum("tipo_documento", ["acta_asamblea", "acta_directiva", "resolucion"]);
+export const estadoRegistro = pgEnum("estado_registro", ["vigente", "anulado"]);
+
+export const convocatoria = pgTable("convocatoria", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  tipo: tipoEvento("tipo").notNull(),
+  titulo: text("titulo").notNull(),
+  fecha: date("fecha", { mode: "string" }).notNull(),
+  hora: time("hora").notNull(),
+  lugar: text("lugar").notNull(),
+  ordenDia: text("orden_dia"),
+  eventoId: uuid("evento_id"),
+  estado: estadoRegistro("estado").notNull().default("vigente"),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  motivoAnulacion: text("motivo_anulacion"),
+  notificados: integer("notificados").notNull().default(0),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const documento = pgTable("documento", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  tipo: tipoDocumento("tipo").notNull(),
+  titulo: text("titulo").notNull(),
+  fecha: date("fecha", { mode: "string" }).notNull(),
+  descripcion: text("descripcion"),
+  archivoRuta: text("archivo_ruta").notNull(),
+  publicado: boolean("publicado").notNull().default(false),
+  estado: estadoRegistro("estado").notNull().default("vigente"),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  motivoAnulacion: text("motivo_anulacion"),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const comunicacionRecibida = pgTable("comunicacion_recibida", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  institucion: text("institucion").notNull(),
+  asunto: text("asunto").notNull(),
+  referencia: text("referencia"),
+  fechaRecepcion: date("fecha_recepcion", { mode: "string" }).notNull(),
+  resumen: text("resumen").notNull(),
+  archivoRuta: text("archivo_ruta"),
+  publicada: boolean("publicada").notNull().default(false),
+  estado: estadoRegistro("estado").notNull().default("vigente"),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  motivoAnulacion: text("motivo_anulacion"),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const hilo = pgTable("hilo", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  usuarioId: uuid("usuario_id").notNull(),
+  asunto: text("asunto").notNull(),
+  iniciadoPorAdmin: boolean("iniciado_por_admin").notNull().default(false),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  ultimoMensajeEn: timestamp("ultimo_mensaje_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const mensaje = pgTable("mensaje", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  hiloId: uuid("hilo_id").notNull(),
+  autorId: uuid("autor_id").notNull().references(() => usuario.id),
+  deAdministracion: boolean("de_administracion").notNull(),
+  texto: text("texto").notNull(),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  leidoEn: timestamp("leido_en", { withTimezone: true }),
+});

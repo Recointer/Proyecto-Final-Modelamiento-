@@ -80,3 +80,9 @@ export function esFechaFutura(fecha: string, ahora: Date = new Date()): boolean 
 export function formatoFecha(fecha: string): string {
   return fecha.split("-").reverse().join("/");
 }
+
+/** true si la fecha (AAAA-MM-DD) y hora (HH:MM) ya pasaron en Ecuador. */
+export function esPasada(fecha: string, hora: string, ahora: Date = new Date()): boolean {
+  const local = new Date(ahora.getTime() + OFFSET_MS).toISOString(); // AAAA-MM-DDTHH:MM:SS.sssZ en hora de Ecuador
+  return `${fecha}T${hora}` <= local.slice(0, 16);
+}

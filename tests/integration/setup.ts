@@ -40,7 +40,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await admin.unsafe(
-    "TRUNCATE pago, contador_comprobante, cargo, concepto_cobro, egreso, movimiento_material, material, activo_fijo, asistencia, turno, predio, servicio, evento, socio, audit_log, token_recuperacion, sesion, designacion_administrador, sector, usuario, junta CASCADE",
+    "TRUNCATE mensaje, hilo, comunicacion_recibida, documento, convocatoria, pago, contador_comprobante, cargo, concepto_cobro, egreso, movimiento_material, material, activo_fijo, asistencia, turno, predio, servicio, evento, socio, audit_log, token_recuperacion, sesion, designacion_administrador, sector, usuario, junta CASCADE",
   );
 });
 

@@ -14,7 +14,7 @@ desarrollado con **Spec-Driven Development** usando [GitHub Spec Kit](https://gi
 | **Gestión de Plataforma** (inicio de sesión, juntas, administrador, panel, configuración, cuentas) | Implementado |
 | Gestión Administrativa (socios, asistencia, predios, calendario) | Completo: nómina de socios, eventos y asistencia con quórum, predios con mapa de Google (con degradación a lista), servicios con turnos y calendario semanal, y consulta del Socio con historial de asistencia en PDF |
 | Gestión Financiera (ingresos, egresos, multas, comprobantes, inventarios, reportes) | Completo: conceptos y cargos por año, pagos con comprobante consecutivo en PDF, multas por inasistencia, egresos con respaldo, resumen de caja, reportes en PDF y CSV, inventario, activos fijos y estado de cuenta del Socio |
-| Gestión de Comunicaciones (convocatorias, actas, mensajería) | Pendiente |
+| Gestión de Comunicaciones (convocatorias, actas, mensajería) | Completo: convocatorias con aviso por correo, actas y resoluciones con publicación, comunicaciones recibidas y comunicados, y mensajería entre el Administrador y los socios |
 
 Cubre los requerimientos RF-01, RF-02, RF-04 y RF-05 más el inicio de sesión y el panel de la plataforma.
 El detalle está en [`specs/001-gestion-plataforma/`](specs/001-gestion-plataforma/).

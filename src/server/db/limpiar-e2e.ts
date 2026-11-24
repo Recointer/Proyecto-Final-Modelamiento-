@@ -26,7 +26,12 @@ async function main() {
       await tx`DELETE FROM sesion WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM token_recuperacion WHERE usuario_id IN (SELECT id FROM usuario WHERE tenant_id = ANY(${ids}))`;
       await tx`DELETE FROM designacion_administrador WHERE junta_id = ANY(${ids})`;
-      // módulo financiero y administrativo (en orden de dependencias)
+      // comunicaciones, módulo financiero y administrativo (en orden de dependencias)
+      await tx`DELETE FROM mensaje WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM hilo WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM comunicacion_recibida WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM documento WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM convocatoria WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM pago WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM contador_comprobante WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM cargo WHERE tenant_id = ANY(${ids})`;
@@ -47,7 +52,11 @@ async function main() {
       await tx`DELETE FROM junta WHERE id = ANY(${ids})`;
       // imágenes de predios de esas juntas
       const base = path.resolve(process.env.FILE_STORE_DIR ?? "./storage");
-      for (const id of ids) await rm(path.join(base, "predios", id), { recursive: true, force: true });
+      for (const id of ids) {
+        for (const carpeta of ["predios", "egresos", "documentos", "comunicaciones"]) {
+          await rm(path.join(base, carpeta, id), { recursive: true, force: true });
+        }
+      }
       console.log(`Juntas de prueba borradas: ${ids.length}`);
     });
   } finally {

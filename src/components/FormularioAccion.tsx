@@ -42,6 +42,21 @@ export function FormularioAccion({
         const error = estado.errores?.[c.nombre];
         const descr = error ? `${id}-error` : c.ayuda ? `${id}-ayuda` : undefined;
         const comun = { id, name: c.nombre, "aria-invalid": error ? true : undefined, "aria-describedby": descr } as const;
+        if (c.tipo === "checkbox") {
+          return (
+            <div key={c.nombre} className="space-y-1">
+              <label htmlFor={id} className="flex items-start gap-2 text-sm font-semibold text-slate-800">
+                <input {...comun} type="checkbox" value="on" defaultChecked={estado.valores ? Boolean(estado.valores[c.nombre]) : c.inicial === "on"} className="mt-1 h-4 w-4" />
+                <span>{c.etiqueta}</span>
+              </label>
+              {c.ayuda ? (
+                <p id={`${id}-ayuda`} className="pl-6 text-xs font-normal text-slate-600">
+                  {c.ayuda}
+                </p>
+              ) : null}
+            </div>
+          );
+        }
         return (
           <div key={`${c.nombre}-${valor}`} className="space-y-1">
             <label htmlFor={id} className="block text-sm font-semibold text-slate-800">
