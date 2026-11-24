@@ -8,6 +8,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  pgView,
   text,
   timestamp,
   uuid,
@@ -249,3 +250,134 @@ export const turno = pgTable("turno", {
 export type Socio = typeof socio.$inferSelect;
 export type Evento = typeof evento.$inferSelect;
 export type Predio = typeof predio.$inferSelect;
+
+// ---------------------------------------------------------------------------------------------
+// Módulo de Gestión Financiera (drizzle/0008_financiero.sql)
+// Importes: numeric(12,2) llega como texto; los cálculos se hacen en centavos (src/lib/dinero.ts).
+// ---------------------------------------------------------------------------------------------
+
+export const tipoConcepto = pgEnum("tipo_concepto", ["cuota", "servicio", "multa"]);
+export const estadoConcepto = pgEnum("estado_concepto", ["activo", "inactivo"]);
+export const formaPago = pgEnum("forma_pago", ["efectivo", "transferencia", "deposito"]);
+export const categoriaEgreso = pgEnum("categoria_egreso", ["compras", "trabajos", "honorarios", "tasas", "otros"]);
+export const tipoMovimiento = pgEnum("tipo_movimiento", ["entrada", "salida"]);
+export const estadoMaterial = pgEnum("estado_material", ["activo", "inactivo"]);
+export const estadoActivo = pgEnum("estado_activo", ["vigente", "baja"]);
+
+export const conceptoCobro = pgTable("concepto_cobro", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  nombre: text("nombre").notNull(),
+  tipo: tipoConcepto("tipo").notNull(),
+  montoDefecto: numeric("monto_defecto", { precision: 12, scale: 2 }).notNull().default("0"),
+  estado: estadoConcepto("estado").notNull().default("activo"),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const cargo = pgTable("cargo", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  conceptoId: uuid("concepto_id").notNull(),
+  socioId: uuid("socio_id").notNull(),
+  anio: smallint("anio").notNull(),
+  monto: numeric("monto", { precision: 12, scale: 2 }).notNull(),
+  vence: date("vence", { mode: "string" }),
+  eventoId: uuid("evento_id"),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  motivoAnulacion: text("motivo_anulacion"),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const pago = pgTable("pago", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  cargoId: uuid("cargo_id").notNull(),
+  /** Lo asigna el disparador de la base de datos (consecutivo por junta); el valor enviado se ignora. */
+  numero: integer("numero").notNull().default(0),
+  monto: numeric("monto", { precision: 12, scale: 2 }).notNull(),
+  fecha: date("fecha", { mode: "string" }).notNull(),
+  forma: formaPago("forma").notNull(),
+  referencia: text("referencia"),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  motivoAnulacion: text("motivo_anulacion"),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const egreso = pgTable("egreso", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  fecha: date("fecha", { mode: "string" }).notNull(),
+  categoria: categoriaEgreso("categoria").notNull(),
+  descripcion: text("descripcion").notNull(),
+  beneficiario: text("beneficiario").notNull(),
+  monto: numeric("monto", { precision: 12, scale: 2 }).notNull(),
+  respaldoRuta: text("respaldo_ruta"),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  anuladoPor: uuid("anulado_por").references(() => usuario.id),
+  motivoAnulacion: text("motivo_anulacion"),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const material = pgTable("material", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  nombre: text("nombre").notNull(),
+  unidad: text("unidad").notNull(),
+  stock: numeric("stock", { precision: 12, scale: 2 }).notNull().default("0"),
+  minimo: numeric("minimo", { precision: 12, scale: 2 }).notNull().default("0"),
+  estado: estadoMaterial("estado").notNull().default("activo"),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const movimientoMaterial = pgTable("movimiento_material", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  materialId: uuid("material_id").notNull(),
+  tipo: tipoMovimiento("tipo").notNull(),
+  cantidad: numeric("cantidad", { precision: 12, scale: 2 }).notNull(),
+  motivo: text("motivo").notNull(),
+  creadoPor: uuid("creado_por").notNull().references(() => usuario.id),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const activoFijo = pgTable("activo_fijo", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull().references(() => junta.id),
+  codigo: text("codigo").notNull(),
+  nombre: text("nombre").notNull(),
+  fechaAdquisicion: date("fecha_adquisicion", { mode: "string" }).notNull(),
+  valor: numeric("valor", { precision: 12, scale: 2 }).notNull(),
+  ubicacion: text("ubicacion").notNull(),
+  estado: estadoActivo("estado").notNull().default("vigente"),
+  motivoBaja: text("motivo_baja"),
+  bajaEn: timestamp("baja_en", { withTimezone: true }),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type ConceptoCobro = typeof conceptoCobro.$inferSelect;
+
+/** Vista `cargo_saldo`: cargo con pagado, saldo, estado derivado y marca de vencido (security_invoker). */
+export const cargoSaldo = pgView("cargo_saldo", {
+  id: uuid("id").notNull(),
+  tenantId: uuid("tenant_id").notNull(),
+  conceptoId: uuid("concepto_id").notNull(),
+  socioId: uuid("socio_id").notNull(),
+  anio: smallint("anio").notNull(),
+  monto: numeric("monto", { precision: 12, scale: 2 }).notNull(),
+  vence: date("vence", { mode: "string" }),
+  eventoId: uuid("evento_id"),
+  anuladoEn: timestamp("anulado_en", { withTimezone: true }),
+  anuladoPor: uuid("anulado_por"),
+  motivoAnulacion: text("motivo_anulacion"),
+  creadoPor: uuid("creado_por").notNull(),
+  creadoEn: timestamp("creado_en", { withTimezone: true }).notNull(),
+  pagado: numeric("pagado", { precision: 12, scale: 2 }).notNull(),
+  saldo: numeric("saldo", { precision: 12, scale: 2 }).notNull(),
+  estado: text("estado").notNull(),
+  vencido: boolean("vencido").notNull(),
+}).existing();

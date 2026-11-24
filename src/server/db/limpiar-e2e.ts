@@ -26,7 +26,15 @@ async function main() {
       await tx`DELETE FROM sesion WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM token_recuperacion WHERE usuario_id IN (SELECT id FROM usuario WHERE tenant_id = ANY(${ids}))`;
       await tx`DELETE FROM designacion_administrador WHERE junta_id = ANY(${ids})`;
-      // módulo administrativo (en orden de dependencias)
+      // módulo financiero y administrativo (en orden de dependencias)
+      await tx`DELETE FROM pago WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM contador_comprobante WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM cargo WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM concepto_cobro WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM egreso WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM movimiento_material WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM material WHERE tenant_id = ANY(${ids})`;
+      await tx`DELETE FROM activo_fijo WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM asistencia WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM turno WHERE tenant_id = ANY(${ids})`;
       await tx`DELETE FROM predio WHERE tenant_id = ANY(${ids})`;

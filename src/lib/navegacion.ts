@@ -7,7 +7,24 @@ export interface ItemNav {
  * Módulos ya implementados. Se amplía a medida que se entregan las historias, para que el menú
  * nunca enlace a pantallas inexistentes.
  */
-export const MODULOS_DISPONIBLES = new Set<string>(["socios", "eventos", "predios", "servicios", "calendario", "mi-informacion", "mi-asistencia"]);
+export const MODULOS_DISPONIBLES = new Set<string>([
+  "socios",
+  "eventos",
+  "predios",
+  "servicios",
+  "calendario",
+  "mi-informacion",
+  "mi-asistencia",
+  "finanzas",
+  "cobros",
+  "conceptos",
+  "multas",
+  "egresos",
+  "reportes",
+  "inventario",
+  "activos",
+  "mi-estado-cuenta",
+]);
 
 interface Entrada extends ItemNav {
   modulo: string;
@@ -25,8 +42,17 @@ const ENTRADAS: readonly Entrada[] = [
   { modulo: "predios", href: "/predios", etiqueta: "Predios y mapa", roles: [...PERSONAL, "socio"] },
   { modulo: "servicios", href: "/servicios", etiqueta: "Servicios y turnos", roles: PERSONAL },
   { modulo: "calendario", href: "/calendario", etiqueta: "Calendario semanal", roles: [...PERSONAL, "socio"] },
+  { modulo: "finanzas", href: "/finanzas", etiqueta: "Resumen financiero", roles: ["tesorero", "admin_junta"] },
+  { modulo: "cobros", href: "/finanzas/cobros", etiqueta: "Cuentas por cobrar", roles: ["tesorero"] },
+  { modulo: "conceptos", href: "/finanzas/conceptos", etiqueta: "Conceptos de cobro", roles: ["tesorero"] },
+  { modulo: "multas", href: "/finanzas/multas", etiqueta: "Multas", roles: ["tesorero"] },
+  { modulo: "egresos", href: "/finanzas/egresos", etiqueta: "Egresos", roles: ["tesorero"] },
+  { modulo: "reportes", href: "/finanzas/reportes", etiqueta: "Reportes", roles: ["tesorero", "admin_junta"] },
+  { modulo: "inventario", href: "/finanzas/inventario", etiqueta: "Inventario", roles: ["tesorero"] },
+  { modulo: "activos", href: "/finanzas/activos", etiqueta: "Activos fijos", roles: ["tesorero"] },
   { modulo: "mi-informacion", href: "/mi/informacion", etiqueta: "Mi información", roles: ["socio"] },
   { modulo: "mi-asistencia", href: "/mi/asistencia", etiqueta: "Mi asistencia", roles: ["socio"] },
+  { modulo: "mi-estado-cuenta", href: "/mi/estado-de-cuenta", etiqueta: "Mi estado de cuenta", roles: ["socio"] },
 ];
 
 const SIEMPRE = new Set(["configuracion", "usuarios", "inicio"]);

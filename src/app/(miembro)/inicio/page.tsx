@@ -27,6 +27,7 @@ export default async function InicioMiembroPage() {
               <ul className="space-y-1 text-teal-800 underline">
                 <li><Link href="/mi/informacion">Ver mi ficha y mis predios</Link></li>
                 <li><Link href="/mi/asistencia">Ver mi historial de asistencia</Link></li>
+                <li><Link href="/mi/estado-de-cuenta">Ver mi estado de cuenta</Link></li>
                 <li><Link href="/calendario">Ver el calendario de turnos</Link></li>
                 <li><Link href="/predios">Ver el mapa de mis predios</Link></li>
               </ul>
@@ -39,8 +40,9 @@ export default async function InicioMiembroPage() {
         )
       ) : (
         <p className="mt-2 text-slate-600">
-          Use el menú para trabajar con socios, eventos, predios, servicios y el calendario. Los módulos financiero y de
-          comunicaciones estarán disponibles pronto.
+          {user.rol === "tesorero"
+            ? "Use el menú para cobrar cuotas, generar multas, registrar egresos y emitir reportes; también puede consultar socios, eventos, predios, servicios y el calendario."
+            : "Use el menú para trabajar con socios, eventos, predios, servicios y el calendario. El módulo de comunicaciones estará disponible pronto."}
         </p>
       )}
     </AppShell>

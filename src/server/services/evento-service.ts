@@ -4,6 +4,7 @@ import { withTenant, type DbContext } from "../db/context";
 import { evento } from "../db/schema";
 import type { EntradaEvento, FiltrosEvento } from "../validation/evento";
 import { auditar } from "./audit";
+import { anularMultasDeEvento } from "./multa-service";
 
 type CtxTenant = Extract<DbContext, { role: "tenant" }>;
 
@@ -178,5 +179,7 @@ export async function anularEvento(ctx: CtxTenant, id: string, motivo: string): 
       antes: { estado: "activo" },
       despues: { estado: "anulado", motivo: m },
     });
+    // las multas del evento sin pagos se anulan con él; las que ya tienen pagos las decide Tesorería
+    await anularMultasDeEvento(tx, ctx, id);
   });
 }

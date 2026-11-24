@@ -25,6 +25,7 @@ describe("panel del Super Administrador", () => {
       nuevasEsteMes: 0,
       nuevasMesAnterior: 0,
       totalEventos: 0,
+      totalPagos: 0,
     });
     expect(p.eventosDelMes).toEqual([]);
     expect(p.recientes).toEqual([]);

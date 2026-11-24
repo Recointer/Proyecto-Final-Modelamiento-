@@ -4,6 +4,7 @@ import { hoyEcuador } from "../../src/lib/fechas";
 import {
   CEDULA_ADMIN,
   CEDULA_SECRETARIO,
+  CEDULA_TESORERO,
   crearCuentaYEntrar,
   crearJuntaConAdmin,
   crearSectorUI,
@@ -177,6 +178,88 @@ test.describe("accesibilidad y vista móvil", () => {
       await expect(page, `Título de ${ruta}`).toHaveTitle(new RegExp(`^${titulo}`));
       await auditar(page, nombre);
     }
+  });
+
+  test("pantallas del módulo financiero (Tesorero/a y Socio)", async ({ page }) => {
+    test.setTimeout(480_000);
+    const sufijo = Date.now().toString(36);
+    const { slug } = await crearJuntaConAdmin(page, sufijo);
+    await crearSectorUI(page, "Norte");
+    await crearCuentaYEntrar(page, slug, { cedula: CEDULA_SECRETARIO, nombres: "Rosa Secretaria", rol: "secretario", sufijo });
+    await crearSocioUI(page, { cedula: "1710000033", nombres: "Ana Torres", sector: "Norte" });
+
+    await entrarComo(page, slug, CEDULA_ADMIN, PASSWORD_ADMIN);
+    await crearCuentaYEntrar(page, slug, { cedula: CEDULA_TESORERO, nombres: "Tomás Tesorero", rol: "tesorero", sufijo });
+
+    // datos mínimos para que las pantallas tengan contenido
+    await page.goto("/finanzas/conceptos");
+    await page.getByLabel(/^Nombre/).fill("Cuota anual");
+    await page.getByLabel(/^Tipo/).selectOption({ label: "Cuota" });
+    await page.getByLabel(/^Monto por defecto/).fill("24");
+    await page.getByRole("button", { name: "Crear concepto" }).click();
+    await expect(page.getByText("Concepto creado.")).toBeVisible();
+
+    await page.goto("/finanzas/cobros");
+    await page.locator("summary", { hasText: "Emitir cargos" }).click();
+    await page.locator("details").getByLabel(/^Concepto/).selectOption({ index: 1 });
+    await page.getByRole("button", { name: "Emitir cargos" }).click();
+    await expect(page.getByText(/Se emitieron 1 cargos/)).toBeVisible();
+    await page.getByRole("link", { name: /Cobrar.*Ana Torres/ }).click();
+    await expect(page).toHaveURL(/\/finanzas\/cobros\/[0-9a-f-]{36}/);
+    const idCargo = /\/finanzas\/cobros\/([0-9a-f-]{36})/.exec(page.url())?.[1];
+    await page.getByLabel(/^Monto/).fill("10");
+    await page.getByRole("button", { name: "Registrar pago" }).click();
+    await expect(page.getByText(/Pago registrado/)).toBeVisible();
+
+    await page.goto("/finanzas/egresos");
+    await page.locator("summary", { hasText: "Registrar egreso" }).click();
+    await page.locator("details").getByLabel(/^Categoría/).selectOption({ label: "Tasas" });
+    await page.locator("details").getByLabel(/^Descripción/).fill("Tasa de agua");
+    await page.locator("details").getByLabel(/^Beneficiario/).fill("Empresa de agua");
+    await page.locator("details").getByLabel(/^Monto/).fill("12,5");
+    await page.getByRole("button", { name: "Registrar egreso" }).click();
+    await expect(page.getByText("Egreso registrado.")).toBeVisible();
+
+    await page.goto("/finanzas/inventario");
+    await page.getByLabel(/^Nombre/).fill("Tubería PVC");
+    await page.getByLabel(/^Unidad/).fill("m");
+    await page.getByLabel(/^Stock inicial/).fill("20");
+    await page.getByLabel(/^Stock mínimo/).fill("5");
+    await page.getByRole("button", { name: "Registrar material" }).click();
+    await expect(page.getByText("Material registrado.")).toBeVisible();
+
+    await page.goto("/finanzas/activos");
+    await page.getByLabel(/^Código/).fill("AF-001");
+    await page.getByLabel(/^Nombre/).fill("Bomba de agua");
+    await page.getByLabel(/^Fecha de adquisición/).fill("2024-01-15");
+    await page.getByLabel(/^Valor de adquisición/).fill("850");
+    await page.getByLabel(/^Ubicación/).fill("Bodega comunal");
+    await page.getByRole("button", { name: "Registrar activo" }).click();
+    await expect(page.getByText("Activo registrado.")).toBeVisible();
+
+    const pantallas: [string, string, string][] = [
+      ["/finanzas", "Resumen financiero", "resumen financiero"],
+      ["/finanzas/conceptos", "Conceptos de cobro", "conceptos de cobro"],
+      ["/finanzas/cobros", "Cuentas por cobrar", "cuentas por cobrar"],
+      [`/finanzas/cobros/${idCargo}`, "Cargo y pagos", "detalle de cargo"],
+      ["/finanzas/multas", "Multas por inasistencia", "multas"],
+      ["/finanzas/egresos", "Egresos", "egresos"],
+      ["/finanzas/reportes", "Reportes financieros", "reportes"],
+      ["/finanzas/inventario", "Inventario", "inventario"],
+      ["/finanzas/activos", "Activos fijos", "activos fijos"],
+    ];
+    for (const [ruta, titulo, nombre] of pantallas) {
+      await page.goto(ruta);
+      await expect(page, `Título de ${ruta}`).toHaveTitle(new RegExp(`^${titulo}`));
+      await auditar(page, nombre);
+    }
+
+    // el Socio
+    await entrarComo(page, slug, CEDULA_ADMIN, PASSWORD_ADMIN);
+    await crearCuentaYEntrar(page, slug, { cedula: "1710000033", nombres: "Ana Torres", rol: "socio", sufijo });
+    await page.goto("/mi/estado-de-cuenta");
+    await expect(page, "Título de /mi/estado-de-cuenta").toHaveTitle(/^Mi estado de cuenta/);
+    await auditar(page, "mi estado de cuenta");
   });
 });
 

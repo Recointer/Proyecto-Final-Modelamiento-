@@ -14,7 +14,9 @@ export function NavLinks({ items }: { items: ItemNav[] }) {
   return (
     <ul className="flex gap-2 overflow-x-auto md:flex-col">
       {items.map((n) => {
-        const activo = ruta === n.href || ruta.startsWith(`${n.href}/`);
+        // si otro ítem cuelga de esta ruta (p. ej. /finanzas y /finanzas/cobros), solo se marca con coincidencia exacta
+        const tieneHijos = items.some((o) => o !== n && o.href.startsWith(`${n.href}/`));
+        const activo = ruta === n.href || (!tieneHijos && ruta.startsWith(`${n.href}/`));
         return (
           <li key={n.href}>
             <Link

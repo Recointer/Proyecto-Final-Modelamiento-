@@ -21,6 +21,8 @@ export interface Panel {
   nuevasEsteMes: number;
   nuevasMesAnterior: number;
   totalEventos: number;
+  /** Pagos vigentes registrados en todas las juntas (solo la cifra, sin montos). */
+  totalPagos: number;
   eventosDelMes: EventoCalendario[];
   recientes: { id: string; nombre: string; provincia: string; estado: "activa" | "desactivada"; creadaEn: Date }[];
 }
@@ -61,6 +63,7 @@ export async function obtenerPanel(
 
   const datos = await withTenant(ctx, async (tx) => {
     const eventos = await contarEventos(tx, opciones.mes ?? actual);
+    const [pg] = await tx.execute(sql`select total_pagos_plataforma() as n`);
     const [t] = await tx
       .select({
         total: sql<number>`count(*)::int`,
@@ -86,7 +89,7 @@ export async function obtenerPanel(
       .orderBy(desc(junta.creadaEn))
       .limit(5);
 
-    return { t, recientes, eventos };
+    return { t, recientes, eventos, pagos: Number((pg as { n: number } | undefined)?.n ?? 0) };
   });
 
   const t = datos.t;
@@ -98,6 +101,7 @@ export async function obtenerPanel(
     nuevasEsteMes: t?.nuevasEsteMes ?? 0,
     nuevasMesAnterior: t?.nuevasMesAnterior ?? 0,
     totalEventos: datos.eventos.total,
+    totalPagos: datos.pagos,
     eventosDelMes: datos.eventos.delMes,
     recientes: datos.recientes,
   };
@@ -138,6 +142,7 @@ export async function generarReportePlataforma(ctx: CtxSuper, ahora: Date = new 
     ["Juntas nuevas este mes", panel.nuevasEsteMes],
     ["Juntas nuevas el mes anterior", panel.nuevasMesAnterior],
     ["Total de eventos", panel.totalEventos],
+    ["Total de pagos registrados", panel.totalPagos],
     [],
     ["Nombre", "Identificador", "Tipo", "Provincia", "Cantón", "Parroquia", "Estado", "Creada", "Tiene administrador"],
     ...filas.map((f) => [

@@ -44,6 +44,13 @@ export async function migrate(adminUrl: string, appUrl: string): Promise<void> {
     // módulo administrativo: sin DELETE (bajas lógicas); solo los turnos se eliminan
     await sql.unsafe(`GRANT SELECT, INSERT, UPDATE ON socio, evento, asistencia, predio, servicio TO ${appUser}`);
     await sql.unsafe(`GRANT SELECT, INSERT, UPDATE, DELETE ON turno TO ${appUser}`);
+    // módulo financiero: sin DELETE (los registros se anulan); los movimientos son solo de inserción
+    await sql.unsafe(
+      `GRANT SELECT, INSERT, UPDATE ON concepto_cobro, cargo, pago, contador_comprobante, egreso, material, activo_fijo TO ${appUser}`,
+    );
+    await sql.unsafe(`GRANT SELECT, INSERT ON movimiento_material TO ${appUser}`);
+    await sql.unsafe(`GRANT SELECT ON cargo_saldo TO ${appUser}`);
+    await sql.unsafe(`GRANT EXECUTE ON FUNCTION total_pagos_plataforma() TO ${appUser}`);
     await sql.unsafe(`GRANT EXECUTE ON FUNCTION total_eventos_plataforma() TO ${appUser}`);
     await sql.unsafe(`GRANT EXECUTE ON FUNCTION eventos_plataforma_por_dia(integer, integer) TO ${appUser}`);
     await sql.unsafe(`GRANT EXECUTE ON FUNCTION degradar_administrador(uuid, uuid) TO ${appUser}`);

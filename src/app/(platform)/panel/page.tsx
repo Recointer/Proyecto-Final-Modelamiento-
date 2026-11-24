@@ -62,7 +62,7 @@ export default async function PanelPage({
         </a>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <Tarjeta
           testId="total-juntas"
           titulo="Total de juntas"
@@ -74,6 +74,12 @@ export default async function PanelPage({
           titulo="Total de eventos"
           valor={panel.totalEventos}
           detalle={panel.totalEventos === 0 ? "Se mostrarán cuando las juntas registren asambleas y mingas." : undefined}
+        />
+        <Tarjeta
+          testId="total-pagos"
+          titulo="Pagos registrados"
+          valor={panel.totalPagos}
+          detalle={panel.totalPagos === 0 ? "Se mostrarán cuando las juntas cobren a sus socios." : undefined}
         />
         <Tarjeta
           testId="nuevas-mes"

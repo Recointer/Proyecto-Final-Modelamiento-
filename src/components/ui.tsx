@@ -68,3 +68,26 @@ export function Paginacion({
     </nav>
   );
 }
+
+/** Contenedor de tabla desplazable en móvil y accesible por teclado (WCAG 2.1.1). */
+export function TablaScroll({ etiqueta, children }: { etiqueta: string; children: ReactNode }) {
+  return (
+    <div role="region" aria-label={`${etiqueta} (desplazable)`} tabIndex={0} className="relative overflow-x-auto rounded-xl border bg-white">
+      {children}
+    </div>
+  );
+}
+
+const TONO_CARGO = { pendiente: "ambar", parcial: "ambar", pagado: "verde", anulado: "gris" } as const;
+const TEXTO_CARGO = { pendiente: "Pendiente", parcial: "Pago parcial", pagado: "Pagado", anulado: "Anulado" } as const;
+
+/** Estado de un cargo; si está vencido se destaca en rojo. */
+export function InsigniaCargo({ estado, vencido }: { estado: string; vencido?: boolean }) {
+  const e = (estado in TONO_CARGO ? estado : "pendiente") as keyof typeof TONO_CARGO;
+  return (
+    <span className="inline-flex flex-wrap gap-1">
+      <Insignia tono={TONO_CARGO[e]}>{TEXTO_CARGO[e]}</Insignia>
+      {vencido ? <Insignia tono="rojo">Vencido</Insignia> : null}
+    </span>
+  );
+}
