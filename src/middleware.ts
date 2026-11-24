@@ -12,6 +12,10 @@ export function middleware(req: NextRequest) {
   const tieneCookie = req.cookies.has("sesion");
 
   if (!esPublica && !tieneCookie) {
+    // las rutas de API responden 401 en JSON (no una redirección al login)
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ ok: false, error: { codigo: "NO_AUTENTICADO" } }, { status: 401 });
+    }
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";

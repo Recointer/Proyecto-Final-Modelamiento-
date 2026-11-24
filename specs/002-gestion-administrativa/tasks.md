@@ -127,20 +127,20 @@ description: "Lista de tareas: Gestión Administrativa"
 
 ### Tests for User Story 3
 
-- [ ] T041 [P] [US3] Prueba unitaria de validación de predios (`predio.latitud` y `predio.longitud` en rango y ambas o ninguna, `predio.superficie_ha`, `predio.codigo`) en `tests/unit/predio.test.ts`
-- [ ] T042 [P] [US3] Prueba unitaria del cargador de Google Maps (sin clave falla de inmediato, un solo `<script>` por carga, tiempo máximo de 8 s, error de red) en `tests/unit/cargar-maps.test.ts`
-- [ ] T043 [P] [US3] Prueba de integración de `predio-service` (`predio.codigo` único sin distinguir mayúsculas, `predio.sector_id` y `predio.socio_id` de la misma junta, sector con predios que no se puede eliminar, filtro por sector, el Socio solo ve los suyos, imagen guardada y reemplazada, datos del mapa mínimos, auditoría, aislamiento) en `tests/integration/predios.test.ts`
-- [ ] T044 [P] [US3] Prueba E2E de predios (alta con imagen, mapa simulado con `addInitScript`, mapa sin clave con lista y aviso, código repetido y coordenadas inválidas rechazados, el Socio solo ve los suyos) en `tests/e2e/predios.spec.ts`
+- [X] T041 [P] [US3] Prueba unitaria de validación de predios (`predio.latitud` y `predio.longitud` en rango y ambas o ninguna, `predio.superficie_ha`, `predio.codigo`) en `tests/unit/predio.test.ts`
+- [X] T042 [P] [US3] Prueba unitaria del cargador de Google Maps (sin clave falla de inmediato, un solo `<script>` por carga, tiempo máximo de 8 s, error de red) en `tests/unit/cargar-maps.test.ts`
+- [X] T043 [P] [US3] Prueba de integración de `predio-service` (`predio.codigo` único sin distinguir mayúsculas, `predio.sector_id` y `predio.socio_id` de la misma junta, sector con predios que no se puede eliminar, filtro por sector, el Socio solo ve los suyos, imagen guardada y reemplazada, datos del mapa mínimos, auditoría, aislamiento) en `tests/integration/predios.test.ts`
+- [X] T044 [P] [US3] Prueba E2E de predios (alta con imagen, mapa simulado con `addInitScript`, mapa sin clave con lista y aviso, código repetido y coordenadas inválidas rechazados, el Socio solo ve los suyos) en `tests/e2e/predios.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T045 [P] [US3] Crear `src/server/validation/predio.ts` con los esquemas según `predio.codigo`, `predio.nombre`, `predio.superficie_ha`, `predio.sector_id`, `predio.socio_id`, `predio.latitud`, `predio.longitud`, `predio.imagen_ruta` y `predio.estado` de data-model.md; aviso (no error) si las coordenadas caen fuera de Ecuador
-- [ ] T046 [P] [US3] Crear `src/lib/mapa/cargar-google-maps.ts`: carga del `<script>` de Google Maps una sola vez con tiempo máximo de 8 s y rechazo si no hay clave o hay error de red (ver research.md §8)
-- [ ] T047 [US3] Implementar `src/server/services/predio-service.ts`: `listarPredios`, `datosMapaPredios`, `crearPredio`, `editarPredio`, `desactivarPredio`, `reactivarPredio`, `obtenerImagenPredio`; imagen guardada con `FileStore` en `predios/<tenant_id>` y la anterior eliminada al reemplazarla; el Socio se acota por `socioDeSesion`; auditoría (`predio.crear|editar|desactivar|reactivar|imagen`)
-- [ ] T048 [US3] Implementar `src/app/api/predios/[id]/imagen/route.ts`: exige sesión, localiza el predio con la RLS del contexto, comprueba que un Socio pida solo los suyos y responde con `Cache-Control: private` (401, 403 genérico o 404)
-- [ ] T049 [US3] Implementar las Server Actions de predios en `src/app/(gestion)/predios/actions.ts` (escritura solo `requireRole("secretario")`)
-- [ ] T050 [P] [US3] Construir el componente de cliente `src/components/MapaPredios.tsx`: mapa con marcadores y ficha del predio seleccionado, y degradación a lista con coordenadas, enlace a Google Maps y aviso cuando no hay clave, falla la carga o no hay conexión
-- [ ] T051 [US3] Construir las pantallas de predios en `src/app/(gestion)/predios/page.tsx` (mapa, lista y filtro por sector), `nuevo/page.tsx`, `[id]/page.tsx` y `PredioForm.tsx`
+- [X] T045 [P] [US3] Crear `src/server/validation/predio.ts` con los esquemas según `predio.codigo`, `predio.nombre`, `predio.superficie_ha`, `predio.sector_id`, `predio.socio_id`, `predio.latitud`, `predio.longitud`, `predio.imagen_ruta` y `predio.estado` de data-model.md; aviso (no error) si las coordenadas caen fuera de Ecuador
+- [X] T046 [P] [US3] Crear `src/lib/mapa/cargar-google-maps.ts`: carga del `<script>` de Google Maps una sola vez con tiempo máximo de 8 s y rechazo si no hay clave o hay error de red (ver research.md §8)
+- [X] T047 [US3] Implementar `src/server/services/predio-service.ts`: `listarPredios`, `datosMapaPredios`, `crearPredio`, `editarPredio`, `desactivarPredio`, `reactivarPredio`, `obtenerImagenPredio`; imagen guardada con `FileStore` en `predios/<tenant_id>` y la anterior eliminada al reemplazarla; el Socio se acota por `socioDeSesion`; auditoría (`predio.crear|editar|desactivar|reactivar|imagen`)
+- [X] T048 [US3] Implementar `src/app/api/predios/[id]/imagen/route.ts`: exige sesión, localiza el predio con la RLS del contexto, comprueba que un Socio pida solo los suyos y responde con `Cache-Control: private` (401, 403 genérico o 404)
+- [X] T049 [US3] Implementar las Server Actions de predios en `src/app/(gestion)/predios/actions.ts` (escritura solo `requireRole("secretario")`)
+- [X] T050 [P] [US3] Construir el componente de cliente `src/components/MapaPredios.tsx`: mapa con marcadores y ficha del predio seleccionado, y degradación a lista con coordenadas, enlace a Google Maps y aviso cuando no hay clave, falla la carga o no hay conexión
+- [X] T051 [US3] Construir las pantallas de predios en `src/app/(gestion)/predios/page.tsx` (mapa, lista y filtro por sector), `nuevo/page.tsx`, `[id]/page.tsx` y `PredioForm.tsx`
 
 **Checkpoint**: US3 funcional; el mapa nunca bloquea el registro
 
@@ -154,18 +154,18 @@ description: "Lista de tareas: Gestión Administrativa"
 
 ### Tests for User Story 4
 
-- [ ] T052 [P] [US4] Prueba unitaria de validación de servicios y turnos (`turno.dia_semana`, `turno.hora_inicio` y `turno.hora_fin`, fin mayor que inicio, formato de hora) en `tests/unit/turno.test.ts`
-- [ ] T053 [P] [US4] Prueba de integración de servicios y turnos (`servicio.nombre` único sin distinguir mayúsculas, `servicio.tipo`, `servicio.estado`, turno con fin menor o igual al inicio rechazado, solapamiento rechazado por la restricción incluso en dos guardados simultáneos, turnos contiguos válidos, mismo horario en otro sector o servicio válido, eliminar y editar, `turno.sector_id` de la misma junta, aislamiento) en `tests/integration/turnos.test.ts`
-- [ ] T054 [P] [US4] Prueba E2E del calendario (crear servicio y turnos, rechazo de turno inválido y solapado, ver la semana por sector) en `tests/e2e/calendario.spec.ts`
+- [X] T052 [P] [US4] Prueba unitaria de validación de servicios y turnos (`turno.dia_semana`, `turno.hora_inicio` y `turno.hora_fin`, fin mayor que inicio, formato de hora) en `tests/unit/turno.test.ts`
+- [X] T053 [P] [US4] Prueba de integración de servicios y turnos (`servicio.nombre` único sin distinguir mayúsculas, `servicio.tipo`, `servicio.estado`, turno con fin menor o igual al inicio rechazado, solapamiento rechazado por la restricción incluso en dos guardados simultáneos, turnos contiguos válidos, mismo horario en otro sector o servicio válido, eliminar y editar, `turno.sector_id` de la misma junta, aislamiento) en `tests/integration/turnos.test.ts`
+- [X] T054 [P] [US4] Prueba E2E del calendario (crear servicio y turnos, rechazo de turno inválido y solapado, ver la semana por sector) en `tests/e2e/calendario.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T055 [P] [US4] Crear `src/server/validation/servicio.ts` con los esquemas según `servicio.nombre`, `servicio.tipo`, `servicio.estado`, `turno.dia_semana`, `turno.hora_inicio` y `turno.hora_fin` de data-model.md
-- [ ] T056 [US4] Implementar `src/server/services/servicio-service.ts`: servicios (`listar`, `crear`, `editar`, `desactivar`, `reactivar`) y turnos (`crear`, `editar`, `eliminar`) con traducción de los errores `23514` y `23P01` a `TURNO_HORARIO_INVALIDO` y `TURNO_SOLAPADO`, y auditoría (`servicio.*`, `turno.*`)
-- [ ] T057 [US4] Implementar `src/server/services/calendario-service.ts` con `obtenerCalendarioSemanal(ctx, sectorId)` (turnos agrupados por día y próximos turnos)
-- [ ] T058 [US4] Implementar las Server Actions de servicios y turnos en `src/app/(gestion)/servicios/actions.ts` (escritura solo `requireRole("secretario")`)
-- [ ] T059 [P] [US4] Construir el componente `src/components/SemanaCalendario.tsx` (semana de lunes a domingo accesible, con estado vacío)
-- [ ] T060 [US4] Construir las pantallas de servicios en `src/app/(gestion)/servicios/page.tsx`, `nuevo/page.tsx` y `[id]/page.tsx` (turnos con alta, edición y eliminación con confirmación) y el calendario en `src/app/(gestion)/calendario/page.tsx` con selector de sector
+- [X] T055 [P] [US4] Crear `src/server/validation/servicio.ts` con los esquemas según `servicio.nombre`, `servicio.tipo`, `servicio.estado`, `turno.dia_semana`, `turno.hora_inicio` y `turno.hora_fin` de data-model.md
+- [X] T056 [US4] Implementar `src/server/services/servicio-service.ts`: servicios (`listar`, `crear`, `editar`, `desactivar`, `reactivar`) y turnos (`crear`, `editar`, `eliminar`) con traducción de los errores `23514` y `23P01` a `TURNO_HORARIO_INVALIDO` y `TURNO_SOLAPADO`, y auditoría (`servicio.*`, `turno.*`)
+- [X] T057 [US4] Implementar `src/server/services/calendario-service.ts` con `obtenerCalendarioSemanal(ctx, sectorId)` (turnos agrupados por día y próximos turnos)
+- [X] T058 [US4] Implementar las Server Actions de servicios y turnos en `src/app/(gestion)/servicios/actions.ts` (escritura solo `requireRole("secretario")`)
+- [X] T059 [P] [US4] Construir el componente `src/components/SemanaCalendario.tsx` (semana de lunes a domingo accesible, con estado vacío)
+- [X] T060 [US4] Construir las pantallas de servicios en `src/app/(gestion)/servicios/page.tsx`, `nuevo/page.tsx` y `[id]/page.tsx` (turnos con alta, edición y eliminación con confirmación) y el calendario en `src/app/(gestion)/calendario/page.tsx` con selector de sector
 
 **Checkpoint**: US4 funcional (no depende de la nómina)
 

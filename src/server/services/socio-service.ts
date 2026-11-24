@@ -228,3 +228,15 @@ async function cambiarEstado(ctx: CtxTenant, id: string, estado: "activo" | "ina
 /** Baja lógica: conserva historial y predios; el socio deja de aparecer en listas de asistencia nuevas. */
 export const desactivarSocio = (ctx: CtxTenant, id: string) => cambiarEstado(ctx, id, "inactivo");
 export const reactivarSocio = (ctx: CtxTenant, id: string) => cambiarEstado(ctx, id, "activo");
+
+/** Socios activos para los selectores del módulo (p. ej. titular de un predio). */
+export async function listarSociosParaSelector(ctx: CtxTenant): Promise<{ id: string; nombres: string; cedula: string }[]> {
+  return withTenant(ctx, (tx) =>
+    tx
+      .select({ id: socio.id, nombres: socio.nombres, cedula: socio.cedula })
+      .from(socio)
+      .where(and(eq(socio.tenantId, ctx.tenantId), eq(socio.estado, "activo")))
+      .orderBy(asc(sql`lower(${socio.nombres})`), asc(socio.id))
+      .limit(5000),
+  );
+}

@@ -5,6 +5,9 @@ import { spawnSync } from "node:child_process";
 
 process.loadEnvFile(".env");
 process.env.NEXT_DIST_DIR = ".next-e2e";
+// Clave simulada solo para la compilación de pruebas: las E2E interceptan las llamadas a Google Maps
+// (no sale tráfico real). Si el .env tiene una clave real, se respeta.
+process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||= "clave-e2e-simulada";
 
 const ejecutar = (cmd, args) => {
   const r = spawnSync(cmd, args, { stdio: "inherit", shell: process.platform === "win32", env: process.env });
